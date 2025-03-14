@@ -2,6 +2,7 @@ First order of business: be able to turn on, turn off, or dim a single light swi
 
 Argus should be able to lock and unlock the front door
 Argus should be able to control the thermostat
+Argus should be able to control the windows curtains
 
 After a few tasks are controllable, start work on text to command mapping. Start with single commands and work up to the ability to run multiple tasks based on the prompt. Also include the ability to respond when appropriate. You can start with openai's API for now, but eventually this should be self contained.
 
@@ -11,6 +12,7 @@ Argus should have a very friendly UI on desktop and mobile. You can connect to A
 
 As prompt processing becomes more developed, incorporate a voice to text feature. Argus has eyes, ears, and mouths everywhere; you can talk to him from anywhere. Argus should eventually have the ability to constantly listen for his name and receive prompts. He will also have to determine if you said his name on accident or just said something that sounded like it, and that you aren't talking to him.
 Argus should be able to distinguish between different voices.
+Argus should be able to follow you throughout the house by turning on the appropriate speakers as you move
 
 Argus saves these voices and creates profiles for people. These profiles will eventually extend to faces and other physical details, and maybe even personality, speaking style, tastes, etc. Every time he interacts with people, he gets new information to fine tune their profiles, whether it be another word spoken or another angle of one's face.
 
