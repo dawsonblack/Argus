@@ -4,7 +4,9 @@ After a few tasks are controllable, start work on text to command mapping. Start
 
 Argus should be able to interpret abstract or vague prompts as well, i.e. "it's cold in here", "make it warmer", "make it way warmer", or even "make the kitchen more romantic"
 
-As prompt processing becomes more developed, oncorporate a voice to text feature. Argus should eventually have the ability to constantly listen for his name and receive prompts. He will also have to determine if you said his name on accident or just said something that sounded like it, and that you aren't talking to him.
+Argus should have a very friendly UI on desktop and mobile. You can connect to Argus on the local network, or securely anywhere else in the world
+
+As prompt processing becomes more developed, incorporate a voice to text feature. Argus has eyes, ears, and mouths everywhere; you can talk to him from anywhere. Argus should eventually have the ability to constantly listen for his name and receive prompts. He will also have to determine if you said his name on accident or just said something that sounded like it, and that you aren't talking to him.
 Argus should be able to distinguish between different voices.
 
 Argus saves these voices and creates profiles for people. These profiles will eventually extend to faces and other physical details, and maybe even personality, speaking style, tastes, etc. Every time he interacts with people, he gets new information to fine tune their profiles, whether it be another word spoken or another angle of one's face.
