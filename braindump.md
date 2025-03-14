@@ -1,6 +1,6 @@
 First order of business: able to turn on, turn off, or dim a single light switch from raspberry pi. Light switch must still be remotely controllable if it is manually turned off.
 
-After a few tasks are controllable, start work on text to command mapping. Start with single commands and work up to the ability to run multiple tasks based on the prompt. You can start with openai's API for now, but eventually this should be self contained.
+After a few tasks are controllable, start work on text to command mapping. Start with single commands and work up to the ability to run multiple tasks based on the prompt. Also include the ability to respond when appropriate. You can start with openai's API for now, but eventually this should be self contained.
 
 Argus should be able to interpret abstract or vague prompts as well, i.e. "it's cold in here", "make it warmer", "make it way warmer", or even "make the kitchen more romantic"
 
