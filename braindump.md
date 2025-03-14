@@ -11,4 +11,12 @@ Argus saves these voices and creates profiles for people. These profiles will ev
 
 Over time, Argus should learn to take commands without the need to say his name. He should also determine when settings should be changed based on the situation without being asked. Over time, he will learn what is and isn't appropriate to do unprompted or uncalled.
 
-Argus should know when people are at the door and who they are based on their voice and their face. If he doesn't know who they are, he should be able to gather detailed visual and auditory information about them and make a guess. Are they a mailman? A cop? Might they be a relative or friend of someone? Maybe he can even find their face online
+Argus should know when people are at the door and who they are based on their voice and their face. If he doesn't know who they are, he should be able to gather detailed visual and auditory information about them and make a guess. Are they a mailman? A cop? Might they be a relative or friend of someone? Maybe he can even find their face online.
+
+Argus should know my schedule. He should be able to notify me of important things as needed, and he should also keep track of relevant information (i.e. there has just been a major car crash on the road you take to get to your doctor's appointment this afternoon)
+
+Argus should know what's in your kitchen and your pantry.
+
+For all information he tracks, Argus should be thinking about it, analyzing it. For instance, maybe Argus figures out I've been gluten free recently because I stopped buying pasta.
+
+Argus should know all of the clothes I have, and which ones are clean at a particular time. He can suggest certain outfits depending on the weather or the situation. Maybe he can eventually fetch my clothes for me
