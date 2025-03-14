@@ -1,4 +1,7 @@
-First order of business: able to turn on, turn off, or dim a single light switch from raspberry pi. Light switch must still be remotely controllable if it is manually turned off.
+First order of business: be able to turn on, turn off, or dim a single light switch from raspberry pi. Light switch must still be remotely controllable if it is manually turned off. Extend this to other switches in the house upon functionality
+
+Argus should be able to lock and unlock the front door
+Argus should be able to control the thermostat
 
 After a few tasks are controllable, start work on text to command mapping. Start with single commands and work up to the ability to run multiple tasks based on the prompt. Also include the ability to respond when appropriate. You can start with openai's API for now, but eventually this should be self contained.
 
