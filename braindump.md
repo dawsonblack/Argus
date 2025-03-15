@@ -3,6 +3,7 @@ First order of business: be able to turn on, turn off, or dim a single light swi
 Argus should be able to lock and unlock the front door
 Argus should be able to control the thermostat
 Argus should be able to control the windows curtains
+Argus should be able to set timers, alarms, and perform mathematical operations
 
 After a few tasks are controllable, start work on text to command mapping. Start with single commands and work up to the ability to run multiple tasks based on the prompt. Also include the ability to respond when appropriate. You can start with openai's API for now, but eventually this should be self contained.
 
