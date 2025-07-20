@@ -250,3 +250,84 @@ input:checked + .slider {
 input:checked + .slider::before {
   transform: translateX(22px);
 }
+
+
+
+
+.appliance-card {
+  background-color: #1c1c1c;
+  border: 1px solid #2b2b2b;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.appliance-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.appliance-card.on {
+  box-shadow: 0 0 10px #00c85366;
+  border-color: #00c853;
+}
+
+
+.appliance-title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #fff;
+  border-bottom: 1px solid #333;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.appliance-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.volume-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.volume-label {
+  font-size: 0.95rem;
+  color: #ccc;
+}
+
+.volume-slider {
+  width: 100%;
+  accent-color: #00c853;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  background: white;
+  border: none;
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+  background: white;
+  border: none;
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+  cursor: pointer;
+}
+
+
+.room-grid {
+  max-width: 700px;
+  margin: 0 auto;
+}

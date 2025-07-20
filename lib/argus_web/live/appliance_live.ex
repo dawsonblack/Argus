@@ -26,37 +26,40 @@ defmodule ArgusWeb.ApplianceLive do
 
   def render(assigns) do
     ~H"""
-    <div id={"appliance-#{@appliance.slug}"}>
-      <h2><%= @appliance.name %></h2>
+    <div id={"appliance-#{@appliance.slug}"} class={"appliance-card #{if @power == "on", do: "on", else: ""}"}>
+      <h2 class="appliance-title"><%= @appliance.name %></h2>
 
-      <%= if has_command?(@appliance.appliance_commands, "on") and has_command?(@appliance.appliance_commands, "off") do %>
-        <div class="switch-wrapper">
-          <span class="switch-label">Power</span>
-          <label class="switch">
-            <input
-              type="checkbox"
-              phx-click="toggle_power"
-              phx-target={@myself}
-              checked={@power == "on"}
-            />
-            <span class="slider"></span>
-          </label>
+      <div class="appliance-controls">
+        <%= if has_command?(@appliance.appliance_commands, "on") and has_command?(@appliance.appliance_commands, "off") do %>
+          <div class="switch-wrapper">
+            <span class="switch-label">Power</span>
+            <label class="switch">
+              <input
+                type="checkbox"
+                phx-click="toggle_power"
+                phx-target={@myself}
+                checked={@power == "on"}
+              />
+              <span class="slider"></span>
+            </label>
+          </div>
+        <% end %>
+
+        <div class="volume-wrapper">
+          <label class="volume-label">Volume: <%= @volume %></label>
+          <input
+            id="#{@appliance.slug}-volume-slider"
+            type="range"
+            name="value"
+            min="0"
+            max="100"
+            value={@volume}
+            phx-hook="VolumeSlider"
+            phx-target={@myself}
+            class="volume-slider"
+          />
         </div>
-      <% end %>
-
-
-      <label>Volume: <%= @volume %></label>
-      <input
-        id="#{@appliance.slug}-volume-slider"
-        type="range"
-        name="value"
-        min="0"
-        max="100"
-        value={@volume}
-        phx-hook="VolumeSlider"
-        phx-target={@myself}
-        class="w-48"
-      />
+      </div>
     </div>
     """
   end
