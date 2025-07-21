@@ -52,19 +52,21 @@ defmodule ArgusWeb.ApplianceLive do
       <div id="#{@appliance.slug}-volume-stack" class="volume-stack" phx-hook="VolumeHover">
         <div class="volume-controls">
           <div
+            id="#{@appliance.slug}-volume-up"
             class="volume-button plus"
             phx-click="set_volume"
-            phx-value-value={min(@volume + 10, 100)}
+            phx-value-value={min(@volume + 5, 100)}
             phx-target={@myself}
+            phx-hook="RepeatClick"
           >+</div>
 
-          <div class="volume-line"></div>
-
           <div
+            id="#{@appliance.slug}-volume-down"
             class="volume-button minus"
             phx-click="set_volume"
-            phx-value-value={max(@volume - 10, 0)}
+            phx-value-value={max(@volume - 5, 0)}
             phx-target={@myself}
+            phx-hook="RepeatClick"
           >−</div>
         </div>
 

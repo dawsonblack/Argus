@@ -48,6 +48,38 @@ Hooks.VolumeSlider = {
   }
 }
 
+Hooks.RepeatClick = {
+  mounted() {
+    let timeout, interval
+    const holdDelay = 500
+    const repeatRate = 100
+
+    const send = () => {
+      this.pushEventTo(this.el, "set_volume", {
+        value: this.el.getAttribute("phx-value-value")
+      })
+    }
+
+    const clear = () => {
+      clearTimeout(timeout)
+      clearInterval(interval)
+    }
+
+    this.el.addEventListener("mousedown", (e) => {
+      e.preventDefault()
+      send()
+      timeout = setTimeout(() => {
+        interval = setInterval(send, repeatRate)
+      }, holdDelay)
+    })
+
+    this.el.addEventListener("mouseup", clear)
+    this.el.addEventListener("mouseleave", clear)
+    this.el.addEventListener("touchend", clear)
+  }
+}
+
+
 export default Hooks
 
 
