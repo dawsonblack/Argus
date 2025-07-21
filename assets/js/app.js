@@ -53,6 +53,7 @@ Hooks.RepeatClick = {
     let timeout, interval
     const holdDelay = 500
     const repeatRate = 100
+    let held = false
 
     const send = () => {
       this.pushEventTo(this.el, "set_volume", {
@@ -63,12 +64,21 @@ Hooks.RepeatClick = {
     const clear = () => {
       clearTimeout(timeout)
       clearInterval(interval)
+
+      if (!held) {
+        // If user released before holdDelay, treat as single click
+        send()
+      }
+
+      held = false
     }
 
     this.el.addEventListener("mousedown", (e) => {
       e.preventDefault()
-      send()
+
       timeout = setTimeout(() => {
+        held = true
+        send()
         interval = setInterval(send, repeatRate)
       }, holdDelay)
     })
@@ -78,6 +88,7 @@ Hooks.RepeatClick = {
     this.el.addEventListener("touchend", clear)
   }
 }
+
 
 
 export default Hooks
