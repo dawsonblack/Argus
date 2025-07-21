@@ -27,7 +27,7 @@ defmodule ArgusWeb.ApplianceLive do
 
   def render(assigns) do
     ~H"""
-    <div id={"appliance-#{@appliance.slug}"} class={"appliance-card #{if @power == "on", do: "on", else: ""}"}>
+    <div id={"appliance-#{@appliance.slug}"} class={"card appliance #{if @power == "on", do: "on", else: ""}"}>
       <div class="appliance-left">
         <h2 class="appliance-title"><%= @appliance.name %></h2>
 
@@ -50,6 +50,10 @@ defmodule ArgusWeb.ApplianceLive do
       </div>
 
       <div id="#{@appliance.slug}-volume-stack" class="volume-stack" phx-hook="VolumeHover">
+        <div class="volume-bar-wrapper">
+          <div class="volume-bar-fill" style={"height: #{@volume}%"}></div>
+        </div>
+
         <div class="volume-controls">
           <div
             id="#{@appliance.slug}-volume-up"
@@ -77,10 +81,6 @@ defmodule ArgusWeb.ApplianceLive do
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
           </div>
-        </div>
-
-        <div class="volume-bar-wrapper">
-          <div class="volume-bar-fill" style={"height: #{@volume}%"}></div>
         </div>
       </div>
     </div>

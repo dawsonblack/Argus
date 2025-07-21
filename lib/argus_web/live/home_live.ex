@@ -18,7 +18,7 @@ defmodule ArgusWeb.HomeLive do
 
     <main class="room-grid">
       <%= for space <- @home.spaces do %>
-        <section class="room-card">
+        <section class="card">
           <h2><%= space.name %></h2>
           <p>🌡️ Temp: 70°F · 💧 Humidity: 43%</p>
           <.link navigate={~p"/homes/#{@home.slug}/#{space.slug}"}>
