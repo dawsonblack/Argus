@@ -17,6 +17,11 @@ defmodule ArgusWeb.SpaceLive do
     {:ok, assign(socket, home_slug: home_slug, space: space)}
   end
 
+  def mount(_params, _session, socket) do
+    # Fallback mount for /remote
+    mount(%{"home_slug" => "main-apartment", "space_slug" => "bedroom"}, %{}, socket)
+  end
+
 
   def handle_info({:state_update, mac, update}, socket) do
     id = find_appliance_slug(socket.assigns.space.appliances, mac)
