@@ -58,7 +58,12 @@ defmodule ArgusWeb.ApplianceLive do
             phx-value-value={min(@volume + 5, 100)}
             phx-target={@myself}
             phx-hook="RepeatClick"
-          >+</div>
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+          </div>
 
           <div
             id="#{@appliance.slug}-volume-down"
@@ -67,7 +72,11 @@ defmodule ArgusWeb.ApplianceLive do
             phx-value-value={max(@volume - 5, 0)}
             phx-target={@myself}
             phx-hook="RepeatClick"
-          >−</div>
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+          </div>
         </div>
 
         <div class="volume-bar-wrapper">

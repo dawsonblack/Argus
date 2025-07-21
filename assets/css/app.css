@@ -371,11 +371,20 @@ input:checked + .slider::before {
   background: #222;
   width: 24px;
   height: 24px;
-  text-align: center;
+  display: flex;                 /* key: use flexbox */
+  align-items: center;          /* center vertically */
+  justify-content: center; 
   line-height: 24px;
   border-radius: 50%;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
+}
+
+.volume-button svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
 }
 
 .volume-button:focus {
