@@ -24,6 +24,7 @@ defmodule ArgusWeb.ApplianceLive do
     {:noreply, assign(socket, :volume, int_val)}
   end
 
+
   def render(assigns) do
     ~H"""
     <div id={"appliance-#{@appliance.slug}"} class={"appliance-card #{if @power == "on", do: "on", else: ""}"}>
@@ -45,19 +46,28 @@ defmodule ArgusWeb.ApplianceLive do
           </div>
         <% end %>
 
-        <div class="volume-wrapper">
-          <label class="volume-label">Volume: <%= @volume %></label>
-          <input
-            id="#{@appliance.slug}-volume-slider"
-            type="range"
-            name="value"
-            min="0"
-            max="100"
-            value={@volume}
-            phx-hook="VolumeSlider"
-            phx-target={@myself}
-            class="volume-slider"
-          />
+        <div id="#{@appliance.slug}-volume-stack" class="volume-stack" phx-hook="VolumeHover">
+          <div class="volume-controls">
+            <div
+              class="volume-button plus"
+              phx-click="set_volume"
+              phx-value-value={min(@volume + 10, 100)}
+              phx-target={@myself}
+            >+</div>
+
+            <div class="volume-line"></div>
+
+            <div
+              class="volume-button minus"
+              phx-click="set_volume"
+              phx-value-value={max(@volume - 10, 0)}
+              phx-target={@myself}
+            >−</div>
+          </div>
+
+          <div class="volume-bar-wrapper">
+            <div class="volume-bar-fill" style={"height: #{@volume}%"}></div>
+          </div>
         </div>
       </div>
     </div>

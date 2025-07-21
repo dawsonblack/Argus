@@ -331,3 +331,77 @@ input:checked + .slider::before {
   max-width: 700px;
   margin: 0 auto;
 }
+
+
+
+
+
+
+.volume-stack {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  position: relative;
+  height: 120px;
+  margin-top: 12px;
+}
+
+.volume-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 6px 4px;
+  position: relative;
+}
+
+.volume-button {
+  font-size: 20px;
+  color: #888;
+  background: #222;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.volume-button:hover {
+  background: #00c853;
+  color: black;
+}
+
+.volume-line {
+  width: 2px;
+  height: 60px;
+  background: #444;
+  margin: 6px 0;
+}
+
+.volume-bar-wrapper {
+  width: 8px;
+  height: 100%;
+  background: #222;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.volume-stack:hover .volume-bar-wrapper {
+  opacity: 1;
+}
+
+.volume-bar-fill {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: #00c853;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.2s ease;
+}
