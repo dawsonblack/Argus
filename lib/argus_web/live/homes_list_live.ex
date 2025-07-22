@@ -15,7 +15,7 @@ defmodule ArgusWeb.HomesListLive do
 
       <main id="home-list" class="home-list" phx-hook="HomesLoader">
         <%= for home <- @homes do %>
-          <div class="home-card">
+          <div class="card">
             <h2><%= home.name %></h2>
             <p>0 Lights On · No AC</p>
             <.link navigate={~p"/homes/#{home.slug}"}>
