@@ -88,8 +88,8 @@ header .subtitle {
 .switch {
   position: relative;
   display: inline-block;
-  width: 50px;
-  height: 28px;
+  width: 56px;
+  height: 110px;
 }
 
 .switch input {
@@ -103,19 +103,19 @@ header .subtitle {
   cursor: pointer;
   inset: 0;
   background-color: #555;
-  border-radius: 34px;
+  border-radius: 20px;
   transition: background-color 0.3s ease;
 }
 
 .slider::before {
   content: "";
   position: absolute;
-  height: 20px;
-  width: 20px;
+  height: 48px;
+  width: 48px;
   left: 4px;
   bottom: 4px;
   background-color: white;
-  border-radius: 50%;
+  border-radius: 18px;
   transition: transform 0.3s ease;
 }
 
@@ -124,7 +124,7 @@ input:checked + .slider {
 }
 
 input:checked + .slider::before {
-  transform: translateX(22px);
+  transform: translateY(-54px);
 }
 
 .appliance {

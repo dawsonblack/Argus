@@ -30,11 +30,11 @@ defmodule ArgusWeb.ApplianceLive do
     <div id={"appliance-#{@appliance.slug}"} class={"card appliance #{if @power == "on", do: "on", else: ""}"}>
       <div class="appliance-left">
         <h2 class="appliance-title"><%= @appliance.name %></h2>
+      </div>
 
-        <div class="appliance-controls">
+      <div class="appliance-controls">
           <%= if has_command?(@appliance.appliance_commands, "on") and has_command?(@appliance.appliance_commands, "off") do %>
             <div class="switch-wrapper">
-              <span class="switch-label">Power</span>
               <label class="switch">
                 <input
                   type="checkbox"
@@ -47,7 +47,6 @@ defmodule ArgusWeb.ApplianceLive do
             </div>
           <% end %>
         </div>
-      </div>
 
       <div id="#{@appliance.slug}-volume-stack" class="volume-stack" phx-hook="VolumeHover">
         <div class="volume-bar-wrapper">
