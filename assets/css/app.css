@@ -78,85 +78,13 @@ button:hover {
   font-size: 14px;
 }
 
-.appliances {
-  margin-top: 10px;
-}
-
-.status {
-  font-weight: bold;
-  color: #6cf56c;
-}
-
-
-
-.room-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.room-header h1 {
-  font-size: 28px;
-  margin: 0;
-}
-
-.home-name {
-  font-size: 16px;
-  color: #aaa;
-  margin-top: 4px;
-}
-
-
-
+/*room-header and home-name, status, appliances, room-detail, sensor-readings, toggle-btn, commented out volume-wrapper*/
 header .subtitle {
   font-size: 1rem;
   color: #888;
   margin-top: -10px;
   margin-bottom: 30px;
 }
-
-.room-detail {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #1e1e1e;
-  border-radius: 10px;
-  box-shadow: 0 0 5px #111;
-}
-
-.sensor-readings {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  font-size: 1.1rem;
-  color: #ccc;
-}
-
-.toggle-btn {
-  padding: 6px 14px;
-  font-size: 0.9rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.toggle-btn.on {
-  background-color: #00c853;
-  color: black;
-}
-
-.toggle-btn.off {
-  background-color: #d32f2f;
-  color: white;
-}
-
-
-
-
-
-
-
-
-
 
 .switch-wrapper {
   display: flex;
@@ -247,12 +175,6 @@ input:checked + .slider::before {
   flex-direction: column;
   gap: 16px;
 }
-
-/* .volume-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-} */
 
 .volume-label {
   font-size: 0.95rem;
