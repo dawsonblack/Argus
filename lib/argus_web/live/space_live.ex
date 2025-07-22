@@ -52,7 +52,7 @@ defmodule ArgusWeb.SpaceLive do
       <h1><%= @space.name %></h1>
     </header>
 
-    <main class="room-grid">
+    <main class="grid">
       <%= for appliance <- @space.appliances do %>
         <.live_component
           module={ArgusWeb.ApplianceLive}

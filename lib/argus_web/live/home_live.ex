@@ -16,7 +16,7 @@ defmodule ArgusWeb.HomeLive do
       <h1><%= @home.name %></h1>
     </header>
 
-    <main class="room-grid">
+    <main class="grid">
       <%= for space <- @home.spaces do %>
         <section class="card">
           <h2><%= space.name %></h2>

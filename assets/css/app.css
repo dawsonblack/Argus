@@ -19,15 +19,6 @@ h1 {
   letter-spacing: 1px;
 }
 
-.home-list {
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
 button {
   margin-top: 0.5rem;
   padding: 0.5rem 1rem;
@@ -42,16 +33,13 @@ button:hover {
   background-color: #444;
 }
 
-
-
-
-
-
-.room-grid {
+.grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .card {
@@ -202,12 +190,6 @@ input:checked + .slider::before {
   height: 16px;
   width: 16px;
   cursor: pointer;
-}
-
-
-.room-grid {
-  max-width: 700px;
-  margin: 0 auto;
 }
 
 

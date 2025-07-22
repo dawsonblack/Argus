@@ -13,7 +13,7 @@ defmodule ArgusWeb.HomesListLive do
         <h1>ARGUS</h1>
       </header>
 
-      <main id="home-list" class="home-list" phx-hook="HomesLoader">
+      <main id="home-list" class="grid" phx-hook="HomesLoader">
         <%= for home <- @homes do %>
           <div class="card">
             <h2><%= home.name %></h2>
