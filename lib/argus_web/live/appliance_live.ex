@@ -27,7 +27,7 @@ defmodule ArgusWeb.ApplianceLive do
 
   def render(assigns) do
     ~H"""
-    <div id={"appliance-#{@appliance.slug}"} class={"card appliance #{if @power == "on", do: "on", else: ""}"}>
+    <div id={"appliance-#{@appliance.slug}"} class={"item-card appliance #{if @power == "on", do: "on", else: ""}"}>
       <div class="appliance-left">
         <h2 class="appliance-title"><%= @appliance.name %></h2>
       </div>

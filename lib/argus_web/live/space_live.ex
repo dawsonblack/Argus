@@ -1,5 +1,6 @@
 defmodule ArgusWeb.SpaceLive do
   use ArgusWeb, :live_view
+  import ArgusWeb.UIComponents
   alias Argus.Homes
   def mount(%{"home_slug" => home_slug, "space_slug" => space_slug}, _session, socket) do
     space =
@@ -34,8 +35,8 @@ defmodule ArgusWeb.SpaceLive do
     {:noreply, socket}
   end
 
-  def handle_info(_msg, socket) do
-    IO.inspect(_msg, label: "Unhandled pubsub msg in SpaceLive")
+  def handle_info(msg, socket) do
+    IO.inspect(msg, label: "Unhandled pubsub msg in SpaceLive")
     {:noreply, socket}
   end
 
@@ -52,7 +53,7 @@ defmodule ArgusWeb.SpaceLive do
       <h1><%= @space.name %></h1>
     </header>
 
-    <main class="grid">
+    <main class="item-card-grid">
       <%= for appliance <- @space.appliances do %>
         <.live_component
           module={ArgusWeb.ApplianceLive}
@@ -60,6 +61,7 @@ defmodule ArgusWeb.SpaceLive do
           appliance={appliance}
         />
       <% end %>
+      <.add_item />
     </main>
   </body>
   """

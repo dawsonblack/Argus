@@ -33,7 +33,7 @@ button:hover {
   background-color: #444;
 }
 
-.grid {
+.item-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
@@ -42,7 +42,7 @@ button:hover {
   margin: 0 auto;
 }
 
-.card {
+.item-card {
   background-color: #1c1c1c;
   border: 1px solid #333;
   border-radius: 12px;
@@ -51,22 +51,21 @@ button:hover {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card:hover {
+.item-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-.card h2 {
+.item-card h2 {
   margin-top: 0;
   color: #f0f0f0;
 }
 
-.card p {
+.item-card p {
   color: #ccc;
   font-size: 14px;
 }
 
-/*room-header and home-name, status, appliances, room-detail, sensor-readings, toggle-btn, commented out volume-wrapper*/
 header .subtitle {
   font-size: 1rem;
   color: #888;
@@ -280,4 +279,49 @@ input:checked + .slider::before {
   background-color: #00c853;
   border-radius: 4px 4px 0 0;
   transition: height 0.2s ease;
+}
+
+
+
+
+
+
+
+
+
+/* Make the rest of the page blurry and unclickable */
+.blurred {
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Fullscreen gray translucent overlay */
+.item-form-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4); /* dim background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Centered form */
+.item-form {
+  background: rgb(255, 255, 255);
+  color: black;
+  padding: 2rem;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.item-form form {
+  display: flex;
+  flex-direction: column;
 }
