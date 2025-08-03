@@ -59,6 +59,9 @@ defmodule ArgusWeb.HomeLive do
         home={@home}
       />
     <% end %>
+
+    <.settings_button phx-click="show-space-form"/>
+
   </body>
   """
   end

@@ -88,6 +88,8 @@ defmodule ArgusWeb.SpaceLive do
         parent={@space}
       />
     <% end %>
+
+    <.settings_button />
   </body>
   """
   end
