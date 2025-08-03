@@ -83,7 +83,15 @@ defmodule Argus.Homes do
   end
 
 
-  def change_home(%Home{} = home, attrs \\ %{}) do
+  def home_changeset(%Home{} = home, attrs \\ %{}) do
     Home.changeset(home, attrs)
+  end
+
+  def space_changeset(%Space{} = space, attrs \\ %{}) do
+    Space.changeset(space, attrs)
+  end
+
+  def appliance_changeset(%Appliance{} = appliance, attrs \\ %{}) do
+    Appliance.changeset(appliance, attrs)
   end
 end

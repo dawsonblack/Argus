@@ -36,7 +36,7 @@ defmodule ArgusWeb.HomesListLive do
             <h2><%= home.name %></h2>
             <p>0 Lights On · No AC</p>
             <.link navigate={~p"/homes/#{home.slug}"}>
-              <button>Enter</button>
+              <button class="view-button">Enter</button>
             </.link>
           </div>
         <% end %>
