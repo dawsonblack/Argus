@@ -15,14 +15,30 @@ defmodule ArgusWeb.SpaceLive do
       end)
     end
 
-    {:ok, assign(socket, home_slug: home_slug, space: space)}
+    {:ok,
+      socket
+      |> assign(home_slug: home_slug)
+      |> assign(space: space)
+      |> assign(space_slug: space_slug)
+      |> assign(:show_appliance_form, false)}
   end
 
-  def mount(_params, _session, socket) do
-    # Fallback mount for /remote
-    mount(%{"home_slug" => "main-apartment", "space_slug" => "bedroom"}, %{}, socket)
+  def handle_event("show_appliance_form", _params, socket) do
+    {:noreply, assign(socket, show_appliance_form: true)}
   end
 
+  def handle_info(:appliance_created, socket) do
+    home =
+      Homes.get_space_by_slug(socket.assigns.home, socket.assigns.space_slug)
+      |> Argus.Repo.preload(:appliances)
+
+    {:noreply, assign(socket, home: home, show_space_form: false)}
+  end
+
+
+  def handle_info(:form_canceled, socket) do
+    {:noreply, assign(socket, show_space_form: false)}
+  end
 
   def handle_info({:state_update, mac, update}, socket) do
     id = find_appliance_slug(socket.assigns.space.appliances, mac)
@@ -61,8 +77,19 @@ defmodule ArgusWeb.SpaceLive do
           appliance={appliance}
         />
       <% end %>
-      <.add_item />
+
+      <.add_item phx-click="show_appliance_form" />
     </main>
+
+    <%= if @show_appliance_form do %>
+      <.live_component
+        module={ArgusWeb.ApplianceFormComponent}
+        id="appliance-form"
+        parent={@space}
+      />
+    <% end %>
+
+    <.settings_button />
   </body>
   """
   end

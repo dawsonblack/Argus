@@ -1,19 +1,21 @@
-defmodule ArgusWeb.HomeFormComponent do
+defmodule ArgusWeb.SpaceFormComponent do
   use ArgusWeb, :live_component
 
   alias Argus.Homes
-  alias Argus.Homes.Home
+  alias Argus.Homes.Space
 
   def update(assigns, socket) do
-    changeset = Homes.home_changeset(%Home{})
-    {:ok, assign(socket, changeset: changeset)}
-  end
+  changeset = Homes.space_changeset(%Space{})
+  {:ok, assign(socket, assigns)
+    |> assign(:changeset, changeset)}
+end
 
-  def handle_event("save", %{"home" => home_params}, socket) do
-    case Homes.create_home(home_params) do
-      {:ok, _home} ->
-        send(self(), :home_created)
-        {:noreply, assign(socket, changeset: Homes.home_changeset(%Home{}))}
+
+  def handle_event("save", %{"space" => space_params}, socket) do
+    case Homes.create_space(socket.assigns.home, space_params) do
+      {:ok, _space} ->
+        send(self(), :space_created)
+        {:noreply, assign(socket, changeset: Homes.space_changeset(%Space{}))}
 
       {:error, changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
@@ -29,13 +31,10 @@ defmodule ArgusWeb.HomeFormComponent do
     ~H"""
     <div class="item-form-backdrop">
       <div class="item-form">
-        <h2 class="form-title">New Home</h2>
+        <h2 class="form-title">New Space</h2>
         <form phx-submit="save" phx-target={@myself}>
           <label for="name">Name</label>
-          <input type="text" id="name" name="home[name]" />
-
-          <label for="address">Address</label>
-          <input type="text" id="address" name="home[address]" />
+          <input type="text" id="name" name="space[name]" />
 
           <div class="form-actions">
             <button type="button" phx-click="cancel" phx-target={@myself} class="cancel">Cancel</button>
