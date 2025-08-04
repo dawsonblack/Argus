@@ -30,7 +30,7 @@ defmodule ArgusWeb.UIComponents do
   def settings_button(assigns) do
     ~H"""
     <button
-      phx-click="show_space_form"
+      phx-click="show_settings"
       class="settings-button"
       aria-label="settings">
       <svg xmlns="http://www.w3.org/2000/svg"

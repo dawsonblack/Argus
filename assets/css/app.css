@@ -356,6 +356,13 @@ input:checked + .slider::before {
   box-shadow: 0 0 4px #00c85366;
 }
 
+.item-form .bottom-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;

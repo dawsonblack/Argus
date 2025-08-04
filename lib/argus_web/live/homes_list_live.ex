@@ -46,7 +46,7 @@ defmodule ArgusWeb.HomesListLive do
 
       <%= if @show_home_form do %>
         <.live_component
-          module={ArgusWeb.HomeFormComponent}
+          module={ArgusWeb.AddHomeFormComponent}
           id="home-form"
         />
       <% end %>

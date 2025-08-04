@@ -20,25 +20,39 @@ defmodule ArgusWeb.SpaceLive do
       |> assign(home_slug: home_slug)
       |> assign(space: space)
       |> assign(space_slug: space_slug)
-      |> assign(:show_appliance_form, false)}
+      |> assign(:show_add_form, false)
+      |> assign(:show_settings, false)}
   end
 
-  def handle_event("show_appliance_form", _params, socket) do
-    {:noreply, assign(socket, show_appliance_form: true)}
+  def handle_event("show_add_form", _params, socket) do
+    {:noreply, assign(socket, show_add_form: true, show_settings: false)}
   end
 
-  def handle_info(:appliance_created, socket) do
-    home =
-      Homes.get_space_by_slug(socket.assigns.home, socket.assigns.space_slug)
-      |> Argus.Repo.preload(:appliances)
+  def handle_event("show_settings", _params, socket) do
+    {:noreply, assign(socket, show_settings: true, show_add_form: false)}
+  end
 
-    {:noreply, assign(socket, home: home, show_space_form: false)}
+  # def handle_info(:appliance_created, socket) do
+  #   home =
+  #     Homes.get_space_by_slug(socket.assigns.home, socket.assigns.space_slug)
+  #     |> Argus.Repo.preload(:appliances)
+
+  #   {:noreply, assign(socket, home: home, show_add_form: false)}
+  # end
+
+  def handle_info(:settings_closed, socket) do
+    {:noreply, assign(socket, show_settings: false)}
   end
 
 
   def handle_info(:form_canceled, socket) do
-    {:noreply, assign(socket, show_space_form: false)}
+    {:noreply, assign(socket, show_add_form: false)}
   end
+
+  # def handle_info(:space_updated, socket) do
+  #   #space = Homes.get_home_by_slug(socket.assigns.slug)
+  #   {:noreply, assign(socket, home: home, show_settings: false)}
+  # end
 
   def handle_info({:state_update, mac, update}, socket) do
     id = find_appliance_slug(socket.assigns.space.appliances, mac)
@@ -78,13 +92,22 @@ defmodule ArgusWeb.SpaceLive do
         />
       <% end %>
 
-      <.add_item phx-click="show_appliance_form" />
+      <.add_item phx-click="show_add_form" />
     </main>
 
-    <%= if @show_appliance_form do %>
+    <%= if @show_add_form do %>
       <.live_component
         module={ArgusWeb.ApplianceFormComponent}
         id="appliance-form"
+        parent={@space}
+      />
+    <% end %>
+
+    <%= if @show_settings do %>
+      <.live_component
+        module={ArgusWeb.ManageSpaceFormComponent}
+        id="settings"
+        home_slug={@home_slug}
         parent={@space}
       />
     <% end %>

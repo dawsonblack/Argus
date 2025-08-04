@@ -16,7 +16,7 @@ defmodule Argus.Homes.Space do
   def changeset(space, attrs) do
     space
     |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> validate_required([:name], message: "This field is required")
     |> Argus.Slugger.maybe_generate_slug()
     |> unique_constraint([:slug, :home_id])
   end

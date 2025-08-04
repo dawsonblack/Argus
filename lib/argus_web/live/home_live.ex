@@ -11,11 +11,16 @@ defmodule ArgusWeb.HomeLive do
       socket
       |> assign(home: home)
       |> assign(slug: slug)
-      |> assign(:show_space_form, false)}
+      |> assign(:show_add_form, false)
+      |> assign(:show_settings, false)}
   end
 
-  def handle_event("show_space_form", _params, socket) do
-    {:noreply, assign(socket, show_space_form: true)}
+  def handle_event("show_add_form", _params, socket) do
+    {:noreply, assign(socket, show_add_form: true, show_settings: false)}
+  end
+
+  def handle_event("show_settings", _params, socket) do
+    {:noreply, assign(socket, show_settings: true, show_add_form: false)}
   end
 
   def handle_info(:space_created, socket) do
@@ -23,12 +28,21 @@ defmodule ArgusWeb.HomeLive do
       Homes.get_home_by_slug(socket.assigns.slug)
       |> Argus.Repo.preload(:spaces)
 
-    {:noreply, assign(socket, home: home, show_space_form: false)}
+    {:noreply, assign(socket, home: home, show_add_form: false)}
+  end
+
+  # def handle_info(:home_updated, socket) do
+  #   home = Homes.get_home_by_slug(socket.assigns.slug)
+  #   {:noreply, assign(socket, home: home, show_settings: false)}
+  # end
+
+  def handle_info(:settings_closed, socket) do
+    {:noreply, assign(socket, show_settings: false)}
   end
 
 
   def handle_info(:form_canceled, socket) do
-    {:noreply, assign(socket, show_space_form: false)}
+    {:noreply, assign(socket, show_add_form: false)}
   end
 
   def render(assigns) do
@@ -49,18 +63,26 @@ defmodule ArgusWeb.HomeLive do
         </section>
       <% end %>
 
-      <.add_item phx-click="show_space_form" />
+      <.add_item phx-click="show_add_form" />
     </main>
 
-    <%= if @show_space_form do %>
+    <%= if @show_add_form do %>
       <.live_component
-        module={ArgusWeb.SpaceFormComponent}
+        module={ArgusWeb.AddSpaceFormComponent}
         id="space-form"
         home={@home}
       />
     <% end %>
 
-    <.settings_button phx-click="show-space-form"/>
+    <%= if @show_settings do %>
+      <.live_component
+        module={ArgusWeb.ManageHomeFormComponent}
+        id="settings"
+        home={@home}
+      />
+    <% end %>
+
+    <.settings_button />
 
   </body>
   """
