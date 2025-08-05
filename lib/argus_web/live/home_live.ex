@@ -31,15 +31,9 @@ defmodule ArgusWeb.HomeLive do
     {:noreply, assign(socket, home: home, show_add_form: false)}
   end
 
-  # def handle_info(:home_updated, socket) do
-  #   home = Homes.get_home_by_slug(socket.assigns.slug)
-  #   {:noreply, assign(socket, home: home, show_settings: false)}
-  # end
-
   def handle_info(:settings_closed, socket) do
     {:noreply, assign(socket, show_settings: false)}
   end
-
 
   def handle_info(:form_canceled, socket) do
     {:noreply, assign(socket, show_add_form: false)}

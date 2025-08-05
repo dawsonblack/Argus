@@ -72,4 +72,27 @@ defmodule ArgusWeb.UIComponents do
     </style>
     """
   end
+
+  def delete_confirmation(assigns) do
+    ~H"""
+    <div class="item-form">
+      <p>Are you sure you want to delete? "{@name}" will be deleted forever</p>
+      <div class="form-actions">
+        <button phx-click="delete_canceled" phx-target={@myself} class="cancel">Cancel</button>
+        <button phx-click="delete" phx-target={@myself} id="delete" class="save">Delete</button>
+      </div>
+
+    <style>
+      #delete {
+        background-color: #dc2626;
+        color: #f9fafb;
+      }
+
+      #delete:hover {
+        background-color: #b91c1c;
+      }
+    </style>
+    </div>
+    """
+  end
 end

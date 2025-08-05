@@ -25,11 +25,11 @@ defmodule ArgusWeb.SpaceLive do
   end
 
   def handle_event("show_add_form", _params, socket) do
-    {:noreply, assign(socket, show_add_form: true, show_settings: false)}
+    {:noreply, assign(socket, show_add_form: true)}
   end
 
   def handle_event("show_settings", _params, socket) do
-    {:noreply, assign(socket, show_settings: true, show_add_form: false)}
+    {:noreply, assign(socket, show_settings: true)}
   end
 
   # def handle_info(:appliance_created, socket) do
@@ -48,11 +48,6 @@ defmodule ArgusWeb.SpaceLive do
   def handle_info(:form_canceled, socket) do
     {:noreply, assign(socket, show_add_form: false)}
   end
-
-  # def handle_info(:space_updated, socket) do
-  #   #space = Homes.get_home_by_slug(socket.assigns.slug)
-  #   {:noreply, assign(socket, home: home, show_settings: false)}
-  # end
 
   def handle_info({:state_update, mac, update}, socket) do
     id = find_appliance_slug(socket.assigns.space.appliances, mac)
@@ -95,6 +90,8 @@ defmodule ArgusWeb.SpaceLive do
       <.add_item phx-click="show_add_form" />
     </main>
 
+    <.settings_button />
+
     <%= if @show_add_form do %>
       <.live_component
         module={ArgusWeb.ApplianceFormComponent}
@@ -111,8 +108,6 @@ defmodule ArgusWeb.SpaceLive do
         parent={@space}
       />
     <% end %>
-
-    <.settings_button />
   </body>
   """
   end
