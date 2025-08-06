@@ -87,6 +87,10 @@ defmodule Argus.Homes do
     Repo.delete(home)
   end
 
+  def delete_space(%Space{} = space) do
+    Repo.delete(space)
+  end
+
 
   def home_changeset(%Home{} = home, attrs \\ %{}) do
     Home.changeset(home, attrs)

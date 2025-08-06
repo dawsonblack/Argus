@@ -363,11 +363,28 @@ input:checked + .slider::before {
   margin-top: 1rem;
 }
 
+.delete-button {
+  background-color: #2c2c2c;
+  color: #f44336;
+  border: none;
+  border-radius: 100%;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #3a3a3a;
+  color: #ff6659;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
-  margin-top: 1rem;
 }
 
 .form-actions button {
