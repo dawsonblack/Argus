@@ -50,22 +50,22 @@ defmodule Argus.DeviceWorker do
         {:noreply, state}
 
       # 2. Connection status
-      {:ok, %{"status" => status, "mac_address" => mac}} ->
+      {:ok, %{"status" => _status, "mac_address" => _mac}} ->
         #Logger.info("Device #{mac} is #{status}")
         {:noreply, state}
 
       # 3. Error report from Python
-      {:ok, %{"error" => message, "mac_address" => mac}} ->
+      {:ok, %{"error" => _message, "mac_address" => _mac}} ->
         #Logger.error("Device #{mac} error: #{message}")
         {:noreply, state}
 
       # Catch-all for anything else
-      {:ok, other} ->
+      {:ok, _other} ->
         #Logger.debug("Other message: #{inspect(other)}")
         {:noreply, state}
 
       # Malformed JSON
-      {:error, err} ->
+      {:error, _err} ->
         #Logger.warning("Failed to decode BLE response: #{inspect(err)}")
         {:noreply, state}
     end

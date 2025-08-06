@@ -25,8 +25,10 @@ Homes.create_space(home, %{name: "Bathroom"})
 Homes.create_space(home, %{name: "Office"})
 
 space = Homes.get_space_by_slug(home, "bedroom")
-#Homes.create_appliance(space, %{name: "Noise Maker", mac_address: "E0:E2:E6:6D:A8:CA"})
-Homes.create_appliance(space, %{name: "Noise Maker", mac_address: "BA38DF23-BA87-3204-BF7C-F63DCFDBBB1F"}) #mac
+
+#CHANGEME
+Homes.create_appliance(space, %{name: "Noise Maker", mac_address: "E0:E2:E6:6D:A8:CA"})
+#Homes.create_appliance(space, %{name: "Noise Maker", mac_address: "BA38DF23-BA87-3204-BF7C-F63DCFDBBB1F"}) #mac
 
 appliance = Homes.get_appliance_by_slug(space, "noise-maker")
 
