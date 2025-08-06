@@ -1,0 +1,111 @@
+version: "3.1"
+
+nlu:
+- intent: action
+  examples: |
+    - Turn on the kitchen light
+    - Set the thermostat to 72 degrees
+    - Play white noise in the bedroom
+    - Dim the living room lights
+    - Open the blinds in the office
+    - Turn off the bathroom fan
+    - Activate the security system
+    - Start the coffee maker
+    - Lock the front door
+    - Preheat the oven to 350 degrees
+    - Lower the volume on the TV
+    - Mute the speakers
+    - Turn on the fan in the guest room
+    - Switch off all lights
+    - Set an alarm for 7 AM
+    - Turn off the hallway light
+    - Can you make the bedroom warmer
+    - Start the dishwasher
+    - Close the garage door
+    - Change the color of the living room lights to blue
+    - Turn on the humidifier
+    - Please pause the music
+    - Turn off the AC
+    - Set the light to 50 percent brightness please
+    - Can you turn on the garden lights
+    - Open the windows, I'm boiling
+    - Play some relaxing music
+    - Switch on the porch light
+    - Deactivate sleep mode
+    - Can you please turn off the TV in the living room
+    - Enable bedtime routine
+    - Could you adjust the thermostat down two degrees
+    - Lower the blinds
+
+- intent: information
+  examples: |
+    - What's the temperature in the bedroom
+    - Is the front door locked
+    - What's the current humidity level
+    - Is the fan on in the kitchen
+    - What time is the alarm set for
+    - Is the TV still on
+    - How much energy am I using right now
+    - What's the current brightness of the living room light
+    - Is the air purifier running
+    - How loud is the noise machine
+    - Is the bathroom light off
+    - What's the current mode of the thermostat
+    - Is the oven on
+    - How warm is the living room
+    - Is the security system armed
+    - What is the status of the garage door
+    - What's the current volume of the speakers
+    - Are the garden lights on
+    - What's the CO2 level
+    - Is there motion in the office
+    - What's the weather like today
+    - What's 87 divided by 19
+    - How much is 5 times 13
+    - What's 2 to the power of 6
+    - What's the square root of 121
+    - Add 56 and 29
+    - Subtract 100 from 250
+    - Divide 144 by 12
+    - What's 3 factorial
+    - Multiply 9 by 7
+    - What is 15 percent of 200
+    - What's the average temperature in the house
+    - How many devices are currently on
+    - Is the overhead light brighter than 50%
+
+- intent: conversation
+  examples: |
+    - Good morning Argus
+    - You're really helpful
+    - That was awesome
+    - How are you today
+    - Thank you
+    - You're doing great
+    - I'm feeling tired
+    - You're the best
+    - It's too quiet in here
+    - I had a long day
+    - Let's talk about something fun
+    - You sound smart
+    - That's funny
+    - Can you tell me a joke
+    - I'm going to bed
+    - I don't feel like talking right now
+    - You have a cool voice
+    - Just chilling
+    - Never mind
+    - Forget it
+    - You're cool
+    - Nice work earlier
+    - I like this system
+    - I'm bored
+    - Do you dream
+    - What do you think of humans
+    - How's it going
+    - That's not what I meant
+    - I was just thinking out loud
+    - Haha, yeah
+    - Cool
+    - What's up
+    - Let me think

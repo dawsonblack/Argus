@@ -4,7 +4,7 @@ defmodule ArgusWeb.AddHomeFormComponent do
   alias Argus.Homes
   alias Argus.Homes.Home
 
-  def update(assigns, socket) do
+  def update(_assigns, socket) do
     changeset = Homes.home_changeset(%Home{})
     {:ok, assign(socket, changeset: changeset)}
   end
