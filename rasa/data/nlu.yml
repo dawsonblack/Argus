@@ -1,111 +1,215 @@
 version: "3.1"
-
 nlu:
-- intent: action
+- intent: action_command
   examples: |
-    - Turn on the kitchen light
-    - Set the thermostat to 72 degrees
-    - Play white noise in the bedroom
-    - Dim the living room lights
-    - Open the blinds in the office
-    - Turn off the bathroom fan
-    - Activate the security system
-    - Start the coffee maker
-    - Lock the front door
-    - Preheat the oven to 350 degrees
-    - Lower the volume on the TV
-    - Mute the speakers
-    - Turn on the fan in the guest room
-    - Switch off all lights
-    - Set an alarm for 7 AM
-    - Turn off the hallway light
-    - Can you make the bedroom warmer
-    - Start the dishwasher
-    - Close the garage door
-    - Change the color of the living room lights to blue
-    - Turn on the humidifier
-    - Please pause the music
-    - Turn off the AC
-    - Set the light to 50 percent brightness please
-    - Can you turn on the garden lights
-    - Open the windows, I'm boiling
-    - Play some relaxing music
-    - Switch on the porch light
-    - Deactivate sleep mode
-    - Can you please turn off the TV in the living room
-    - Enable bedtime routine
-    - Could you adjust the thermostat down two degrees
-    - Lower the blinds
+    - turn on the [lamp](device_type) in the [bedroom](space)
+    - turn off the [lamp](device_type)
+    - switch on the [overhead light](device_type) in the [office](space)
+    - switch off the [overhead light](device_type)
+    - dim the [living room](space) [overhead light](device_type) to 40%
+    - brighten the [kitchen](space) [lamp](device_type) to 80%
+    - set the [thermostat](device_type) to 70
+    - set the [thermostat](device_type) in the [office](space) to 72
+    - lower the [bedroom](space) [thermostat](device_type) by 2 degrees
+    - raise the [thermostat](device_type) by 3 degrees
+    - lock the [front door](device_name)
+    - unlock the [front door](device_name)
+    - lock the [door](device_type) in the [entryway](space)
+    - unlock the [door](device_type)
+    - turn on the [fan](device_type) in the [office](space)
+    - turn off the [fan](device_type)
+    - start the [air purifier](device_type) in the [bedroom](space)
+    - stop the [air purifier](device_type)
+    - open the [blinds](device_type) in the [living room](space)
+    - close the [blinds](device_type)
+    - raise the [shades](device_type) in the [office](space)
+    - lower the [shades](device_type)
+    - turn on the [heater](device_type) in the [garage](space)
+    - turn off the [heater](device_type)
+    - set the [humidifier](device_type) to 45%
+    - set the [humidifier](device_type) in the [nursery](space) to 50%
+    - turn on the [dehumidifier](device_type) in the [basement](space)
+    - turn off the [dehumidifier](device_type)
+    - start the [coffee maker](device_type) in the [kitchen](space)
+    - stop the [coffee maker](device_type)
+    - open the [garage door](device_type)
+    - close the [garage door](device_type)
+    - power on the [tv](device_type) in the [living room](space)
+    - power off the [tv](device_type)
+    - mute the [speaker](device_type) in the [office](space)
+    - unmute the [speaker](device_type)
+    - set the [speaker](device_type) volume to 30%
+    - set the [speaker](device_type) volume in the [bedroom](space) to 15%
+    - turn on the [light strip](device_type) under the [bed](space)
+    - turn off the [light strip](device_type)
+    - set the [bedroom lamp](device_name) to 20%
+    - brighten the [bedroom lamp](device_name) to 70%
+    - turn on the [desk lamp](device_name)
+    - turn off the [desk lamp](device_name)
+    - set the [office overhead](device_name) to 60%
+    - turn on the [porch light](device_name)
+    - turn off the [porch light](device_name)
+    - start the [robot vacuum](device_type) in the [living room](space)
+    - dock the [robot vacuum](device_type)
+    - set the [ac](device_type) to 68
+    - set the [ac](device_type) in the [bedroom](space) to 66
+    - turn the [bedroom](space) [light](device_name) on
 
-- intent: information
+- intent: information_request
   examples: |
-    - What's the temperature in the bedroom
-    - Is the front door locked
-    - What's the current humidity level
-    - Is the fan on in the kitchen
-    - What time is the alarm set for
-    - Is the TV still on
-    - How much energy am I using right now
-    - What's the current brightness of the living room light
-    - Is the air purifier running
-    - How loud is the noise machine
-    - Is the bathroom light off
-    - What's the current mode of the thermostat
-    - Is the oven on
-    - How warm is the living room
-    - Is the security system armed
-    - What is the status of the garage door
-    - What's the current volume of the speakers
-    - Are the garden lights on
-    - What's the CO2 level
-    - Is there motion in the office
-    - What's the weather like today
-    - What's 87 divided by 19
-    - How much is 5 times 13
-    - What's 2 to the power of 6
-    - What's the square root of 121
-    - Add 56 and 29
-    - Subtract 100 from 250
-    - Divide 144 by 12
-    - What's 3 factorial
-    - Multiply 9 by 7
-    - What is 15 percent of 200
-    - What's the average temperature in the house
-    - How many devices are currently on
-    - Is the overhead light brighter than 50%
+    - is the [lamp](device_type) on in the [bedroom](space)?
+    - is the [lamp](device_type) on?
+    - is the [overhead light](device_type) off in the [office](space)?
+    - is the [overhead light](device_type) off?
+    - what's the [thermostat](device_type) set to?
+    - what's the [thermostat](device_type) set to in the [office](space)?
+    - how warm is the [bedroom](space)?
+    - what's the temperature in the [living room](space)?
+    - is the [front door](device_name) locked?
+    - is the [front door](device_name) unlocked?
+    - is the [door](device_type) locked in the [entryway](space)?
+    - is the [fan](device_type) running in the [office](space)?
+    - is the [fan](device_type) on?
+    - is the [air purifier](device_type) on in the [bedroom](space)?
+    - is the [air purifier](device_type) off?
+    - are the [blinds](device_type) open in the [living room](space)?
+    - are the [blinds](device_type) closed?
+    - are the [shades](device_type) up in the [office](space)?
+    - are the [shades](device_type) down?
+    - is the [heater](device_type) on in the [garage](space)?
+    - is the [heater](device_type) off?
+    - what's the [humidifier](device_type) set to?
+    - what's the [humidifier](device_type) set to in the [nursery](space)?
+    - is the [dehumidifier](device_type) running in the [basement](space)?
+    - is the [dehumidifier](device_type) off?
+    - is the [coffee maker](device_type) brewing in the [kitchen](space)?
+    - is the [coffee maker](device_type) on?
+    - is the [garage door](device_type) open?
+    - is the [garage door](device_type) closed?
+    - is the [tv](device_type) on in the [living room](space)?
+    - is the [tv](device_type) off?
+    - is the [speaker](device_type) muted in the [office](space)?
+    - is the [speaker](device_type) muted?
+    - what's the [speaker](device_type) volume?
+    - what's the [speaker](device_type) volume in the [bedroom](space)?
+    - is the [light strip](device_type) on under the [bed](space)?
+    - is the [light strip](device_type) off?
+    - what's the brightness of the [bedroom lamp](device_name)?
+    - what's the brightness of the [bedroom lamp](device_name) right now?
+    - is the [desk lamp](device_name) on?
+    - is the [desk lamp](device_name) off?
+    - is the [office overhead](device_name) on?
+    - is the [porch light](device_name) on?
+    - is the [porch light](device_name) off?
+    - is the [robot vacuum](device_type) cleaning in the [living room](space)?
+    - is the [robot vacuum](device_type) docked?
+    - what's the [ac](device_type) set to?
+    - what's the [ac](device_type) set to in the [bedroom](space)?
+    - how hot is it in the [garage](space)?
+    - how cool is it in the [nursery](space)?
+  
+- intent: arithmetic
+  examples: |
+    - what is 5 plus 8
+    - calculate 14 minus 6
+    - what is 7 times 9
+    - solve 81 divided by 9
+    - add 34 and 56
+    - subtract 27 from 100
+    - multiply 12 by 11
+    - divide 144 by 12
+    - what is the sum of 45 and 67
+    - what is the difference between 90 and 42
+    - what is the product of 8 and 13
+    - what is the quotient of 72 and 8
+    - if I have 15 apples and eat 4, how many are left
+    - if you buy 3 books for $12 each, what's the total
+    - if I walk 5 miles each day for 7 days, how far is that
+    - 12 + 45
+    - 88 - 33
+    - 6 * 14
+    - 96 / 8
+    - 2 + 3 * 5
+    - (4 + 6) * 2
+    - 5 squared
+    - 81 square root
+    - what's 15% of 200
+    - increase 120 by 15%
+    - decrease 80 by 20%
+    - 0.75 times 48
+    - 2.5 times 4
+    - 100 divided by 4.5
+    - 3.14 times 10
+    - half of 86
+    - a quarter of 64
+    - 3 cubed
+    - 10 to the power of 4
+    - 200 minus 75 plus 50
+    - what's the remainder of 50 divided by 7
+    - 50 mod 7
+    - average of 5, 8, and 12
+    - mean of 14, 18, 20, and 22
+    - sum of 1 through 10
+    - total of 15, 25, and 35
+    - 1/2 plus 3/4
+    - 5/8 minus 1/4
+    - convert 3 hours to minutes
+    - convert 120 minutes to hours
+    - how many seconds are in 2 hours
+    - 60 seconds times 45
+    - 24 multiplied by 365
+    - 7 days times 4 weeks
+    - 1000 divided by 25
 
 - intent: conversation
   examples: |
-    - Good morning Argus
-    - You're really helpful
-    - That was awesome
-    - How are you today
-    - Thank you
-    - You're doing great
-    - I'm feeling tired
-    - You're the best
-    - It's too quiet in here
-    - I had a long day
-    - Let's talk about something fun
-    - You sound smart
-    - That's funny
-    - Can you tell me a joke
-    - I'm going to bed
-    - I don't feel like talking right now
-    - You have a cool voice
-    - Just chilling
-    - Never mind
-    - Forget it
-    - You're cool
-    - Nice work earlier
-    - I like this system
-    - I'm bored
-    - Do you dream
-    - What do you think of humans
-    - How's it going
-    - That's not what I meant
-    - I was just thinking out loud
-    - Haha, yeah
-    - Cool
-    - What's up
-    - Let me think
+    - how's your day going
+    - what are you up to
+    - tell me something interesting
+    - do you like music
+    - what's your favorite food
+    - tell me a joke
+    - what do you think about the weather today
+    - how are you feeling
+    - what are your hobbies
+    - can you tell me a story
+    - who's your favorite superhero
+    - what movies do you recommend
+    - do you believe in luck
+    - how do you spend your free time
+    - what's the meaning of life
+    - tell me something random
+    - what do you do for fun
+    - can we chat
+    - just talk to me
+    - what are your thoughts on AI
+    - have you read any good books lately
+    - tell me a fun fact
+    - how do you usually start your day
+    - what's your opinion on coffee
+    - do you like animals
+    - tell me about your favorite place
+    - what's your favorite season
+    - what's your dream vacation
+    - do you like spicy food
+    - how do you relax
+    - can you give me some motivation
+    - cheer me up
+    - let's talk about something random
+    - what's your favorite hobby
+    - tell me about space
+    - do you know any riddles
+    - give me a riddle
+    - what's the weirdest thing you know
+    - tell me about history
+    - tell me about science
+    - what's your favorite color
+    - what's the coolest invention ever
+    - do you have friends
+    - do you ever get tired
+    - do you like video games
+    - what's your favorite song
+    - do you have a favorite quote
+    - can you give me some advice
+    - how do you stay positive
+    - let's just talk

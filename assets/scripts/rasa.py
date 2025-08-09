@@ -13,12 +13,16 @@ def parse(text):
 
     if response.status_code == 200:
         data = response.json()
-        intent = data["intent"]["name"]
-        confidence = data["intent"]["confidence"]
-        print(f"Intent: {intent}")# (confidence: {confidence:.2f})")
+        print(data)
+        #intent = data["intent"]["name"]
+        #confidence = data["intent"]["confidence"]
+        #print(f"Intent: {intent}")# (confidence: {confidence:.2f})")
     else:
         print(f"Error {response.status_code}: {response.text}")
 
 while True:
     prompt = input("Enter prompt:\n")
     parse(prompt)
+
+# rasa train nlu --nlu data/appliances_nlu.yml --fixed-model-name appliance_categorization_seed
+# rasa run --enable-api --model models/ --port 5050
