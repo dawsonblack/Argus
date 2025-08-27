@@ -108,7 +108,7 @@ defmodule Assistant.Embeddings do
   end
 
 
-  # @home = %{
+  # home = %{
   #   bedroom: %{lamp: ["on"],
   #                light: ["on", "off", "brightness"],
   #                fan: ["on", "off", "speed"],
