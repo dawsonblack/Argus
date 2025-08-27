@@ -37,3 +37,5 @@ npm-debug.log
 
 /venv
 /rasa/.rasa
+/rasa/intent/.rasa
+/rasa/write_commands/.rasa
