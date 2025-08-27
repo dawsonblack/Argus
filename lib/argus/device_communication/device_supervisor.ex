@@ -10,7 +10,7 @@ defmodule Argus.DeviceSupervisor do
       Argus.Homes.list_appliances()
       |> Enum.map(fn appliance ->
         %{
-          id: {:device, appliance.id},  # Unique identifier for each child
+          id: {:device, appliance.id},
           start: {Argus.DeviceWorker, :start_link, [appliance]}
         }
       end)
@@ -24,7 +24,7 @@ defmodule Argus.DeviceSupervisor do
         GenServer.call(pid, :get_state)
 
       [] ->
-        %{}  # default if device isn't running
+        %{}
     end
   end
 

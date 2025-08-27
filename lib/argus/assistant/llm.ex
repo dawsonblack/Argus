@@ -1,5 +1,6 @@
 defmodule Assistant.LLM do
   import Assistant.Embeddings
+  alias Argus.Homes
 
   def prompt_llm(prompt, system_context \\ nil, message_history \\ nil, model \\ "llama3.2:3b-instruct-q4_K_M") do
     messages =
@@ -44,7 +45,7 @@ defmodule Assistant.LLM do
   end
 
 
-  defp command_parsing_rag_prompt(sentences, prompt) do
+  defp command_rag_prompt(sentences, prompt) do
     rag_prompt = "#{prompt}\n---- END USER TEXT ----\n\n"
 
     rag_prompt =
@@ -70,9 +71,13 @@ defmodule Assistant.LLM do
         "- {\"room\":\"bedroom\"} Here's the JSON you asked for...\n" <>
         "- ```json {...} ```\n" <>
         "- {\"room\":\"bedroom\",\"device\":\"noise_maker\",\"command\":\"volume\",\"params\":[,]}"
+    IO.puts(rag_prompt)
+    rag_prompt
   end
 
-  def llm_parse_command(prompt, home_data, max_rag_context \\ 3, min_rag_relevance \\ 0.60) do
+  def llm_interpret_command(prompt, home_data, max_rag_context \\ 3, min_rag_relevance \\ 0.60,
+              msg_history \\ nil, emb_model \\ "mxbai-embed-large", llm_model \\ "llama3.2:3b-instruct-q4_K_M") do
+
     system_message = "You are Argus's smart-home command parser.\n" <>
       "Return ONLY valid JSON in this exact schema (no extra text, no code fences):\n{\n" <>
       "\"room\": string|null,          // e.g., \"bedroom\"\n" <>
@@ -87,15 +92,28 @@ defmodule Assistant.LLM do
 
     embedded_prompt =
       prompt
-      |> embed()
+      |> embed(emb_model)
       |> List.first()
       |> Map.get("embedding")
 
     home_data
     |> device_capability_sentences()
-    |> embed()
+    |> embed(emb_model)
     |> get_closest_embeddings(embedded_prompt, max_rag_context, min_rag_relevance)
-    |> command_parsing_rag_prompt(prompt)
-    |> prompt_llm(system_message)
+    |> command_rag_prompt(prompt)
+    |> prompt_llm(system_message, msg_history, llm_model)
+  end
+
+  def temp(prompt, home_data) do
+    json = llm_interpret_command(prompt, home_data)
+    IO.puts(json)
+    json = Jason.decode!(json)
+    appliance = String.replace(Map.get(json, "device"), "_", "-")
+
+    "main-apartment"
+    |> Homes.get_home_by_slug()
+    |> Homes.get_space_by_slug(Map.get(json, "room"))
+    |> Homes.get_appliance_by_slug(appliance)
+    |> Argus.CommandPipeline.send_command(Map.get(json, "command"))
   end
 end

@@ -17,12 +17,11 @@ defmodule Argus.DeviceWorker do
     init_payload =
       appliance
       |> Argus.CommandPipeline.create_command_payload("handshake")
-      |> Map.put("read", "80C37F00-CC16-11E4-8830-0800200C9A66") #this needs to be retrieved from database
+      |> Map.put("read", "80C37F00-CC16-11E4-8830-0800200C9A66") #TODO: this needs to be retrieved from database
       |> Jason.encode!()
       |> then(&(&1 <> "\n"))
     Port.command(port, init_payload)
 
-    # Subscribe to PubSub so this worker can receive commands
     Phoenix.PubSub.subscribe(Argus.PubSub, "appliance:#{appliance.mac_address}")
 
     {:ok, %{appliance: appliance, port: port}}
@@ -51,22 +50,18 @@ defmodule Argus.DeviceWorker do
 
       # 2. Connection status
       {:ok, %{"status" => _status, "mac_address" => _mac}} ->
-        #Logger.info("Device #{mac} is #{status}")
         {:noreply, state}
 
       # 3. Error report from Python
       {:ok, %{"error" => _message, "mac_address" => _mac}} ->
-        #Logger.error("Device #{mac} error: #{message}")
         {:noreply, state}
 
       # Catch-all for anything else
       {:ok, _other} ->
-        #Logger.debug("Other message: #{inspect(other)}")
         {:noreply, state}
 
       # Malformed JSON
       {:error, _err} ->
-        #Logger.warning("Failed to decode BLE response: #{inspect(err)}")
         {:noreply, state}
     end
   end
@@ -75,8 +70,4 @@ defmodule Argus.DeviceWorker do
     # Swallow self-broadcasts or handle them if needed
     {:noreply, state}
   end
-
-  # def handle_call(:get_state, _from, state) do
-  #   {:reply, state.appliance.state || %{}, state}
-  # end
 end
