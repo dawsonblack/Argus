@@ -25,8 +25,8 @@ defmodule Argus.Homes do
 
   def get_appliance_by_slug(%Space{id: space_id}, slug), do: Repo.get_by(Appliance, space_id: space_id, slug: slug)
 
-  def get_appliance_command_by_name(%Appliance{id: appliance_id}, name) do
-    Repo.get_by(ApplianceCommand, appliance_id: appliance_id, name: name)
+  def get_appliance_command_by_name_and_type(%Appliance{id: appliance_id}, name, command_type) do
+    Repo.get_by(ApplianceCommand, appliance_id: appliance_id, name: name, command_type: command_type)
   end
 
 

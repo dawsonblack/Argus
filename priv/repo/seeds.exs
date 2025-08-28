@@ -27,37 +27,40 @@ Homes.create_space(home, %{name: "Office"})
 space = Homes.get_space_by_slug(home, "bedroom")
 
 #CHANGEME
-Homes.create_appliance(space, %{name: "Noise Maker", mac_address: "E0:E2:E6:6D:A8:CA"})
-#Homes.create_appliance(space, %{name: "Noise Maker", mac_address: "BA38DF23-BA87-3204-BF7C-F63DCFDBBB1F"}) #mac
+# Homes.create_appliance(space, %{name: "Noise Maker", mac_address: "E0:E2:E6:6D:A8:CA"})
+Homes.create_appliance(space, %{name: "Noise Maker", mac_address: "BA38DF23-BA87-3204-BF7C-F63DCFDBBB1F"}) #mac
 
 appliance = Homes.get_appliance_by_slug(space, "noise-maker")
 
 Homes.create_appliance_command(appliance,
       %{name: "handshake",
+      command_type: "lifecycle",
       protocol: "bluetooth",
       channel: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["static", [0x06, 0xE0, 0xE2, 0xE6, 0x6D, 0xA8, 0xC8, 0xFF, 0xFF]]]})
 
 Homes.create_appliance_command(appliance,
       %{name: "on",
+      command_type: "write",
       protocol: "bluetooth",
       channel: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["static", [0x02, 0x01]]]})
 
 Homes.create_appliance_command(appliance,
       %{name: "off",
+      command_type: "write",
       protocol: "bluetooth",
       channel: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["static", [0x02, 0x00]]]})
 
 Homes.create_appliance_command(appliance,
       %{name: "volume",
+      command_type: "write",
       protocol: "bluetooth",
       channel: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["min", 100],
                 ["max", 10],
                 ["reverse", 0x01]]})
-
 
 
 # for iex:
@@ -77,3 +80,5 @@ Homes.create_appliance_command(appliance,
 # MIX_ENV=test mix ecto.drop
 # MIX_ENV=test mix ecto.create
 # MIX_ENV=test mix ecto.migrate
+
+# If you remake the database you need to comment out device supervisor in application.ex, otherwise seeds will crash

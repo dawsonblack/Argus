@@ -8,16 +8,16 @@ defmodule Argus.CommandPipeline do
     )
   end
 
-  def send_command(appliance, command_name, user_input \\ nil) do
+  def send_command(appliance, command_name, command_type, user_input \\ nil) do
     Phoenix.PubSub.broadcast(
       Argus.PubSub,
       "appliance:#{appliance.mac_address}",
-      {:send_command, create_command_payload(appliance, command_name, user_input)}
+      {:send_command, command_call_payload(appliance, command_name, command_type, user_input)}
     )
   end
 
-  def create_command_payload(appliance, command_name, user_input \\ nil) do
-    cmd = Argus.Homes.get_appliance_command_by_name(appliance, command_name)
+  def command_call_payload(appliance, command_name, command_type, user_input \\ nil) do
+    cmd = Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, command_type)
 
     command =
       cmd.command
@@ -31,7 +31,7 @@ defmodule Argus.CommandPipeline do
     }
   end
 
-  defp generate_command(pipeline_steps, initial_value) when is_list(pipeline_steps) do
+  defp generate_command(pipeline_steps, initial_value) when is_list(pipeline_steps) do #TODO: only allow for commands with one user input currently
     Enum.reduce(pipeline_steps, initial_value, fn
       [step | args], acc ->
         apply_pipeline_step(step, [acc] ++ args)

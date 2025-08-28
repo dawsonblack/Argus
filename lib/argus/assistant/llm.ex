@@ -114,6 +114,6 @@ defmodule Assistant.LLM do
     |> Homes.get_home_by_slug()
     |> Homes.get_space_by_slug(Map.get(json, "room"))
     |> Homes.get_appliance_by_slug(appliance)
-    |> Argus.CommandPipeline.send_command(Map.get(json, "command"))
+    |> Argus.CommandPipeline.send_command(Map.get(json, "command"), "write") #TODO: Write command is hardcoded in it shouldn't be
   end
 end

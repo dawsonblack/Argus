@@ -14,13 +14,13 @@ defmodule ArgusWeb.ApplianceLive do
   def handle_event("toggle_power", _params, socket) do
     current = socket.assigns.power
     next = if current == "on", do: "off", else: "on"
-    Argus.CommandPipeline.send_command(socket.assigns.appliance, next)
+    Argus.CommandPipeline.send_command(socket.assigns.appliance, next, "write")
     {:noreply, assign(socket, :power, next)}
   end
 
   def handle_event("set_volume", %{"value" => value}, socket) do
     int_val = String.to_integer(value)
-    Argus.CommandPipeline.send_command(socket.assigns.appliance, "volume", int_val)
+    Argus.CommandPipeline.send_command(socket.assigns.appliance, "volume", "write", int_val)
     {:noreply, assign(socket, :volume, int_val)}
   end
 
