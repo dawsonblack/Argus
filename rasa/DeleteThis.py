@@ -3,17 +3,17 @@ import json
 import requests, numpy as np
 
 
-# home = {
-#     "bedroom": {"lamp": ['on'],
-#                  "light": ['on', 'off', 'brightness'],
-#                  "fan": ['on', 'off', 'speed'],
-#                  "noise maker": ['on', 'off', 'volume']},
+home = {
+    "bedroom": {"lamp": ['on'],
+                 "light": ['on', 'off', 'brightness'],
+                 "fan": ['on', 'off', 'speed'],
+                 "noise maker": ['on', 'off', 'volume']},
 
-#     "kitchen": {"light": ['on', 'off', 'brightness']},
+    "kitchen": {"light": ['on', 'off', 'brightness']},
 
-#     "office": {"light": ['on', 'off', 'brightness'],
-#                "fan": ['on', 'off', 'speed']}
-# }
+    "office": {"light": ['on', 'off', 'brightness'],
+               "fan": ['on', 'off', 'speed']}
+}
 
 def join_with_and(items: list[str]) -> str:
     if not items:
@@ -74,15 +74,16 @@ def getClosestEmbeddings(ref_data, target_emb, max_results=3, min_relevance=0.60
                 results[weakest_idx] = candidate
     return results
 
-embedded_device_data = []
-sentences = generate_sentences(home)
-for s in sentences:
-    embeddings = embed(s)
-    embedded_device_data.append({'embedding': embeddings, 'text': s})
+# embedded_device_data = []
+# sentences = generate_sentences(home)
+# print(sentences)
+# for s in sentences:
+#     embeddings = embed(s)
+#     embedded_device_data.append({'embedding': embeddings, 'text': s})
 
-prompt = "Turn the flucker in the bedroom to 30"
-results = getClosestEmbeddings(embedded_device_data, embed(prompt))
-print(results)
+# prompt = "Turn the flucker in the bedroom to 30"
+# results = getClosestEmbeddings(embedded_device_data, embed(prompt))
+# print(results)
 
 
 system_message = """You are Argus's smart-home command parser.
@@ -170,18 +171,22 @@ def promptLLM(prompt, system_context=None, message_history=None, model="llama3.2
     else:
         return {"error": response.status_code, "message": response.text}
 
-response = promptLLM(user_message, system_message)
-print(response)
+# response = promptLLM(user_message, system_message)
+# print(response)
+
+# print("LKDJGVLKWJDBVLKWDS")
+# r = requests.post(URL, json={"model": MODEL, "input": "hello there"})
+# r.raise_for_status()
+# print(r.json()["embeddings"])  # list of vectors
 
 
 
 
-
-#generate sentences for all devices and their possible commands
-#embed the sentences
-#embed the user prompt
-#find the most similar sentences
-#inject the user prompt and the sentences into the llm prompt template
-#call ollama with that prompt and the system context
-#make sure the json is legit
-#make an api call with it
+# # generate sentences for all devices and their possible commands
+# # embed the sentences
+# # embed the user prompt
+# # find the most similar sentences
+# # inject the user prompt and the sentences into the llm prompt template
+# # call ollama with that prompt and the system context
+# # make sure the json is legit
+# # make an api call with it
