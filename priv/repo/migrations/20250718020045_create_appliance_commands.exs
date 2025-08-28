@@ -4,6 +4,7 @@ defmodule Argus.Repo.Migrations.CreateApplianceCommands do
   def change do
     create table(:appliance_commands) do
       add :name, :string, null: false
+      add :command_type, :string, null: false
       add :protocol, :string, null: false
       add :command, :string, null: false
       add :channel, :string
@@ -13,5 +14,6 @@ defmodule Argus.Repo.Migrations.CreateApplianceCommands do
     end
 
     create index(:appliance_commands, [:appliance_id])
+    create constraint(:appliance_commands, :command_type_valid, check: "command_type IN ('read', 'write', 'lifecycle')")
   end
 end

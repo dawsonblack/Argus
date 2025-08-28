@@ -4,6 +4,7 @@ defmodule Argus.Homes.ApplianceCommand do
 
   schema "appliance_commands" do
     field :name, :string
+    field :command_type, :string
     field :protocol, :string
     field :command, :string
     field :channel, :string
@@ -16,7 +17,7 @@ defmodule Argus.Homes.ApplianceCommand do
   @doc false
   def changeset(appliance_command, attrs) do
     appliance_command
-    |> cast(attrs, [:name, :protocol, :command, :channel])
-    |> validate_required([:name, :protocol, :command])
+    |> cast(attrs, [:name, :command_type, :protocol, :command, :channel])
+    |> validate_required([:name, :command_type, :protocol, :command])
   end
 end

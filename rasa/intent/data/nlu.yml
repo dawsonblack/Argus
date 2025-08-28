@@ -1,0 +1,185 @@
+version: "3.1"
+
+nlu:
+- intent: action
+  examples: |
+    - turn on the kitchen light
+    - set the thermostat to 72 degrees
+    - play white noise in the bedroom
+    - dim the living room lights
+    - open the blinds in the office
+    - turn off the bathroom fan
+    - activate the security system
+    - start the coffee maker
+    - lock the front door
+    - preheat the oven to 350 degrees
+    - lower the volume on the TV
+    - mute the speakers
+    - turn on the fan in the guest room
+    - switch off all lights
+    - set an alarm for 7 AM
+    - turn off the hallway light
+    - can you make the bedroom warmer
+    - start the dishwasher
+    - close the garage door
+    - change the color of the living room lights to blue
+    - turn on the humidifier
+    - please pause the music
+    - turn off the AC
+    - set the light to 50 percent brightness please
+    - can you turn on the garden lights
+    - open the windows, I'm boiling
+    - play some relaxing music
+    - switch on the porch light
+    - deactivate sleep mode
+    - can you please turn off the TV in the living room
+    - enable bedtime routine
+    - could you adjust the thermostat down two degrees
+    - lower the blinds
+
+- intent: information
+  examples: |
+    - what's the temperature in the bedroom
+    - is the front door locked
+    - what's the current humidity level
+    - is the fan on in the kitchen
+    - what time is the alarm set for
+    - is the TV still on
+    - how much energy am I using right now
+    - what's the current brightness of the living room light
+    - is the air purifier running
+    - how loud is the noise machine
+    - is the bathroom light off
+    - what's the current mode of the thermostat
+    - is the oven on
+    - how warm is the living room
+    - is the security system armed
+    - what is the status of the garage door
+    - what's the current volume of the speakers
+    - are the garden lights on
+    - what's the CO2 level
+    - is there motion in the office
+    - what's the weather like today
+    - what's 87 divided by 19
+    - how much is 5 times 13
+    - what's 2 to the power of 6
+    - what's the square root of 121
+    - add 56 and 29
+    - subtract 100 from 250
+    - divide 144 by 12
+    - what's 3 factorial
+    - multiply 9 by 7
+    - what is 15 percent of 200
+    - what's the average temperature in the house
+    - how many devices are currently on
+    - is the overhead light brighter than 50%
+  
+- intent: arithmetic
+  examples: |
+    - what is 5 plus 8
+    - calculate 14 minus 6
+    - what is 7 times 9
+    - solve 81 divided by 9
+    - add 34 and 56
+    - subtract 27 from 100
+    - multiply 12 by 11
+    - divide 144 by 12
+    - what is the sum of 45 and 67
+    - what is the difference between 90 and 42
+    - what is the product of 8 and 13
+    - what is the quotient of 72 and 8
+    - if I have 15 apples and eat 4, how many are left
+    - if you buy 3 books for $12 each, what's the total
+    - if I walk 5 miles each day for 7 days, how far is that
+    - 12 + 45
+    - 88 - 33
+    - 6 * 14
+    - 96 / 8
+    - 2 + 3 * 5
+    - (4 + 6) * 2
+    - 5 squared
+    - 81 square root
+    - what's 15% of 200
+    - increase 120 by 15%
+    - decrease 80 by 20%
+    - 0.75 times 48
+    - 2.5 times 4
+    - 100 divided by 4.5
+    - 3.14 times 10
+    - half of 86
+    - a quarter of 64
+    - 3 cubed
+    - 10 to the power of 4
+    - 200 minus 75 plus 50
+    - what's the remainder of 50 divided by 7
+    - 50 mod 7
+    - average of 5, 8, and 12
+    - mean of 14, 18, 20, and 22
+    - sum of 1 through 10
+    - total of 15, 25, and 35
+    - 1/2 plus 3/4
+    - 5/8 minus 1/4
+    - convert 3 hours to minutes
+    - convert 120 minutes to hours
+    - how many seconds are in 2 hours
+    - 60 seconds times 45
+    - 24 multiplied by 365
+    - 7 days times 4 weeks
+    - 1000 divided by 25
+
+- intent: conversation
+  examples: |
+    - what's up
+    - hello
+    - hello argus
+    - hi
+    - how's your day going
+    - what are you up to
+    - tell me something interesting
+    - do you like music
+    - what's your favorite food
+    - tell me a joke
+    - what do you think about the weather today
+    - how are you feeling
+    - what are your hobbies
+    - can you tell me a story
+    - who's your favorite superhero
+    - what movies do you recommend
+    - do you believe in luck
+    - how do you spend your free time
+    - what's the meaning of life
+    - tell me something random
+    - what do you do for fun
+    - can we chat
+    - just talk to me
+    - what are your thoughts on AI
+    - have you read any good books lately
+    - tell me a fun fact
+    - how do you usually start your day
+    - what's your opinion on coffee
+    - do you like animals
+    - tell me about your favorite place
+    - what's your favorite season
+    - what's your dream vacation
+    - do you like spicy food
+    - how do you relax
+    - can you give me some motivation
+    - cheer me up
+    - let's talk about something random
+    - what's your favorite hobby
+    - tell me about space
+    - do you know any riddles
+    - give me a riddle
+    - what's the weirdest thing you know
+    - tell me about history
+    - tell me about science
+    - what's your favorite color
+    - what's the coolest invention ever
+    - do you have friends
+    - do you ever get tired
+    - do you like video games
+    - what's your favorite song
+    - do you have a favorite quote
+    - can you give me some advice
+    - how do you stay positive
+    - let's just talk

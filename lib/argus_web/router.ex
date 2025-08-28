@@ -24,6 +24,24 @@ defmodule ArgusWeb.Router do
     live "/homes/:home_slug/:space_slug/:appliance_slug", ApplianceLive
   end
 
+  scope "/api", ArgusWeb.Api do
+    pipe_through :api
+    get "/homes", HomeController, :show_homes
+    get "/homes/:home_slug", HomeController, :show_home
+    get "/homes/:home_slug/spaces", HomeController, :show_spaces
+    get "/homes/:home_slug/spaces/:space_slug", HomeController, :show_space
+    get "/homes/:home_slug/spaces/:space_slug/appliances", HomeController, :show_appliances
+    get "/homes/:home_slug/spaces/:space_slug/appliances/:appliance_slug", HomeController, :show_appliance
+    get "/homes/:home_slug/spaces/:space_slug/appliances/:appliance_slug/commands", HomeController, :show_appliance_commands
+    get "/homes/:home_slug/spaces/:space_slug/appliances/:appliance_slug/commands/:command_name", HomeController, :show_appliance_command
+  end
+
+  scope "/api/:home_slug/:space_slug/:appliance_slug", ArgusWeb.Api do
+    pipe_through :api
+    get  "/read/:command_name", ApplianceController, :read_from_device
+    post "/write/:command_name", ApplianceController, :write_to_device
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", ArgusWeb do
   #   pipe_through :api

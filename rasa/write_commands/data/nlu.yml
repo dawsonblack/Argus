@@ -1,0 +1,74 @@
+version: "3.1"
+
+nlu:
+  - lookup: room
+    examples: |
+      - bedroom
+      - kitchen
+      - office
+      - living room
+      - bathroom
+
+  - lookup: device
+    examples: |
+      - light
+      - lamp
+      - fan
+      - noise maker
+      - air purifier
+      - speaker
+
+  # ---- Intents ----
+  - intent: on
+    examples: |
+      - turn on
+      - switch on
+      - power on
+      - turn on the [light](device)
+      - turn on the [bedroom](room) [noise maker](device)
+      - please switch on the [office](room) [fan](device)
+      - can you turn on the [lamp](device) in the [living room](room)?
+
+  - intent: off
+    examples: |
+      - turn off
+      - switch off
+      - power off
+      - shut off the [fan](device)
+      - turn the [kitchen](room) [light](device) off
+      - please power down the [noise maker](device)
+      - can you switch off the [lamp](device) in the [bedroom](room)
+
+  - intent: volume
+    examples: |
+      - volume
+      - adjust the volume [down](direction)
+      - turn the volume [up](direction)
+      - turn the volume [down](direction)
+      - set the volume to [50](value)
+      - make the [bedroom](room) [noise maker](device) [louder](direction)
+      - [lower](direction) the volume on the [speaker](device) in the [office](room)
+      - turn the volume [up](direction) on the [bedroom](room) [noise maker](device)
+      - [lower](direction) the volume by [10](value) percent
+
+  - intent: brightness
+    examples: |
+      - brightness
+      - adjust the brightness [up](direction)
+      - make it [brighter](direction)
+      - [dim](direction) the lights
+      - set brightness to [40](value) percent
+      - [dim](direction) the [kitchen](room) [light](device)
+      - [increase](direction) brightness by [3](value) percent on the [lamp](device) in the [living room](room)
+
+  - intent: speed
+    examples: |
+      - speed
+      - adjust the speed [down](direction)
+      - turn the speed [up](direction)
+      - turn the speed [down](direction)
+      - set the speed to [3](value)
+      - make the [fan](device) [10](value) percent [faster](direction)
+      - [slow](direction) the [fan](device) by [8](value)
+      - [increase](direction) the [fan](device) speed in the [bedroom](room)
+      - [lower](direction) the [office](room) [fan](device) speed
