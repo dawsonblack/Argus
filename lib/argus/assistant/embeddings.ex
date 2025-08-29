@@ -81,20 +81,4 @@ defmodule Assistant.Embeddings do
       List.delete(acc1, weakest)
     end
   end
-
-
-  # home = %{
-  #   bedroom: %{lamp: ["on"],
-  #                light: ["on", "off", "brightness"],
-  #                fan: ["on", "off", "speed"],
-  #                noise_maker: ["on", "off", "volume"]},
-
-  #   kitchen: %{light: ["on", "off", "brightness"]},
-
-  #   office: %{light: ["on", "off", "brightness"],
-  #              fan: ["on", "off", "speed"]}
-  # }
 end
-
-
-#["The lamp in the bedroom supports the commands: on.", "The light in the bedroom supports the commands: on, off, and brightness.", "The fan in the bedroom supports the commands: on, off, and speed.", "The noise maker in the bedroom supports the commands: on, off, and volume.", "The light in the kitchen supports the commands: on, off, and brightness.", "The light in the office supports the commands: on, off, and brightness.", "The fan in the office supports the commands: on, off, and speed."]
