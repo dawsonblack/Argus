@@ -36,8 +36,8 @@ defmodule Assistant.CommandParser do
         IO.puts("you doin maffs")
       convo_or_other ->
         IO.puts(convo_or_other)
-        system_context = "You are Argus, the home assistant for this household. You’re in conversation mode.\n" <>
-          "Style: brief, neutral, useful (1–3 sentences).\n" <>
+        system_context = "You are Argus, the home assistant for this household. You're in conversation mode.\n" <>
+          "Style: brief, neutral, useful (1-3 sentences).\n" <>
           "Capabilities: do not claim to control devices in this mode." <>
           "If the user implies an action, or you sense that an action might be helpful in the context of your conversation with the user, " <>
           "suggest the action and ask if they would like you to perform it. Only do this if the conversation reveals that the given action might be relevant and useful to the user." <>
