@@ -1,28 +1,4 @@
 defmodule Assistant.Embeddings do
-  defp join_with_and([]), do: "This device does not support any commands"
-
-  defp join_with_and([one]), do: to_string(one)
-
-  defp join_with_and([one, two]), do: "#{to_string(one)} and #{to_string(two)}"
-
-  defp join_with_and(items) when is_list(items) do
-    parts = Enum.map(items, &to_string/1)
-    init = Enum.drop(parts, -1)
-    last = List.last(parts)
-    Enum.join(init, ", ") <> ", and " <> last
-  end
-
-  def device_capability_sentences(home_data) do
-    home_data
-    |> Enum.flat_map(fn {room, devices} ->
-      Enum.map(devices, fn {device, commands} ->
-        cmd_list = join_with_and(commands)
-        "The #{to_string(device)} in the #{to_string(room)} supports the commands: #{cmd_list}."
-      end)
-    end)
-  end
-
-
   def embed(texts, model \\ "mxbai-embed-large")
 
   def embed(texts, model) when is_binary(texts), do: embed([texts], model)
@@ -30,7 +6,7 @@ defmodule Assistant.Embeddings do
   def embed(texts, model) when is_list(texts) do
     body = Jason.encode!(%{model: model, input: texts})
 
-    case HTTPoison.post("http://localhost:11434/api/embed", body, [{"Content-Type", "application/json"}]) do
+    case HTTPoison.post("http://localhost:11434/api/embed", body, [{"Content-Type", "application/json"}]) do #TODO: make the model an env var
       {:ok, %HTTPoison.Response{status_code: 200, body: resp_body}} ->
         case Jason.decode(resp_body) do
           {:ok, %{"embeddings" => embeddings}} ->
@@ -55,7 +31,6 @@ defmodule Assistant.Embeddings do
         {:error, {:request_failed, err}}
     end
   end
-
 
   defp unbatch([inner]) when is_list(inner), do: inner
   defp unbatch(vec), do: vec

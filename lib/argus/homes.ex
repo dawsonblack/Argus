@@ -103,4 +103,27 @@ defmodule Argus.Homes do
   def appliance_changeset(%Appliance{} = appliance, attrs \\ %{}) do
     Appliance.changeset(appliance, attrs)
   end
+
+  def appliance_commands_struct(home_id, command_type) do
+    from(s in Space,
+      where: s.home_id == ^home_id,
+      join: a in assoc(s, :appliances),
+      join: c in assoc(a, :appliance_commands),
+      where: c.command_type == ^command_type,
+      select: {s.slug, a.slug, c.name}
+    )
+    |> Repo.all()
+    |> Enum.group_by(fn {space, _, _} -> space end)
+    |> Enum.map(fn {space, triples} ->
+      devices =
+        triples
+        |> Enum.group_by(fn {_, appliance, _} -> appliance end,
+                         fn {_, _, cmd} -> cmd end)
+        |> Enum.map(fn {appliance, cmds} -> {appliance, Enum.uniq(cmds)} end)
+        |> Map.new()
+
+      {space, devices}
+    end)
+    |> Map.new()
+  end
 end

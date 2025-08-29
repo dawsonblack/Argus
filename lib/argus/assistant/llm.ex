@@ -20,7 +20,7 @@ defmodule Assistant.LLM do
 
     headers = [{"Content-Type", "application/json"}]
 
-    case HTTPoison.post("http://localhost:11434/api/chat", Jason.encode!(payload), headers) do
+    case HTTPoison.post("http://localhost:11434/api/chat", Jason.encode!(payload), headers) do #TODO: make the url and/or the port based on env vars. Same with model
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         with {:ok, decoded} <- Jason.decode(body),
              content when is_binary(content) <- get_in(decoded, ["message", "content"]) do
@@ -45,7 +45,7 @@ defmodule Assistant.LLM do
   end
 
 
-  defp command_rag_prompt(sentences, prompt) do
+  defp prompt_with_rag(sentences, prompt) do
     rag_prompt = "#{prompt}\n---- END USER TEXT ----\n\n"
 
     rag_prompt =
@@ -71,11 +71,10 @@ defmodule Assistant.LLM do
         "- {\"room\":\"bedroom\"} Here's the JSON you asked for...\n" <>
         "- ```json {...} ```\n" <>
         "- {\"room\":\"bedroom\",\"device\":\"noise_maker\",\"command\":\"volume\",\"params\":[,]}"
-    IO.puts(rag_prompt)
     rag_prompt
   end
 
-  def llm_interpret_command(prompt, home_data, max_rag_context \\ 3, min_rag_relevance \\ 0.60,
+  def llm_interpret_command(prompt, home_slug, command_type, max_rag_context \\ 3, min_rag_relevance \\ 0.60,
               msg_history \\ nil, emb_model \\ "mxbai-embed-large", llm_model \\ "llama3.2:3b-instruct-q4_K_M") do
 
     system_message = "You are Argus's smart-home command parser.\n" <>
@@ -96,24 +95,22 @@ defmodule Assistant.LLM do
       |> List.first()
       |> Map.get("embedding")
 
-    home_data
-    |> device_capability_sentences()
-    |> embed(emb_model)
+    home_slug
+    |> Assistant.DeviceCapabilities.load_capability_embeddings(command_type)
     |> get_closest_embeddings(embedded_prompt, max_rag_context, min_rag_relevance)
-    |> command_rag_prompt(prompt)
+    |> prompt_with_rag(prompt)
     |> prompt_llm(system_message, msg_history, llm_model)
   end
 
-  def temp(prompt, home_data) do
-    json = llm_interpret_command(prompt, home_data)
-    IO.puts(json)
-    json = Jason.decode!(json)
-    appliance = String.replace(Map.get(json, "device"), "_", "-")
+  # def temp(prompt, home_data) do
+  #   json = llm_interpret_command(prompt, home_data)
+  #   json = Jason.decode!(json)
+  #   appliance = String.replace(Map.get(json, "device"), "_", "-")
 
-    "main-apartment"
-    |> Homes.get_home_by_slug()
-    |> Homes.get_space_by_slug(Map.get(json, "room"))
-    |> Homes.get_appliance_by_slug(appliance)
-    |> Argus.CommandPipeline.send_command(Map.get(json, "command"), "write") #TODO: Write command is hardcoded in it shouldn't be
-  end
+  #   "main-apartment"
+  #   |> Homes.get_home_by_slug()
+  #   |> Homes.get_space_by_slug(Map.get(json, "room"))
+  #   |> Homes.get_appliance_by_slug(appliance)
+  #   |> Argus.CommandPipeline.send_command(Map.get(json, "command"), "write") #TODO: Write command is hardcoded in it shouldn't be
+  # end
 end
