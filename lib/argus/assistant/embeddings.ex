@@ -1,12 +1,13 @@
 defmodule Argus.Assistant.Embeddings do
-  def embed(texts, model \\ "mxbai-embed-large")
+  def embed(texts) when is_binary(texts), do: embed([texts])
 
-  def embed(texts, model) when is_binary(texts), do: embed([texts], model)
+  def embed(texts) when is_list(texts) do
+    port = Application.get_env(:argus, :embeddings_port)
+    model = Application.get_env(:argus, :embeddings_mode)
 
-  def embed(texts, model) when is_list(texts) do
     body = Jason.encode!(%{model: model, input: texts})
 
-    case HTTPoison.post("http://localhost:11434/api/embed", body, [{"Content-Type", "application/json"}]) do #TODO: make the model an env var
+    case HTTPoison.post("http://localhost:#{port}/api/embed", body, [{"Content-Type", "application/json"}]) do
       {:ok, %HTTPoison.Response{status_code: 200, body: resp_body}} ->
         case Jason.decode(resp_body) do
           {:ok, %{"embeddings" => embeddings}} ->

@@ -29,7 +29,7 @@ defmodule Argus.Assistant.DeviceCapabilities do
       "priv/device_capabilities/#{home_slug}_#{command_type}.json",
       home_data
       |> device_capability_sentences()
-      |> Embeddings.embed()
+      |> Argus.Assistant.Embeddings.embed()
       |> Jason.encode!(pretty: true)
     )
   end

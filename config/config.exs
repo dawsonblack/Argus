@@ -9,7 +9,14 @@ import Config
 
 config :argus,
   ecto_repos: [Argus.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+
+  #CHANGEME when these are different for your situation
+  ollama_port: 11434,
+  embeddings_port: 11434,
+  rasa_port: 5050,
+  ollama_model: "llama3.2:3b-instruct-q4_K_M",
+  embeddings_mode: "mxbai-embed-large"
 
 # Configures the endpoint
 config :argus, ArgusWeb.Endpoint,

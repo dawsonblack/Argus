@@ -6,12 +6,14 @@ defmodule Argus.Assistant.CommandParsing do
   alias Argus.Homes
 
   def message_intent(message) do
+    port = Application.get_env(:argus, :rasa_port)
+
     payload = %{
       "text" => message
     }
     headers = [{"Content-Type", "application/json"}]
 
-    case HTTPoison.post("http://localhost:5050/model/parse", Jason.encode!(payload), headers) do #TODO: make the url and/or the port based on env vars
+    case HTTPoison.post("http://localhost:#{port}/model/parse", Jason.encode!(payload), headers) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         with {:ok, decoded} <- Jason.decode(body), content when is_binary(content) <- get_in(decoded, ["intent", "name"]) do
           content
@@ -41,6 +43,7 @@ defmodule Argus.Assistant.CommandParsing do
             "home",
             "main-apartment" |> Homes.get_home_by_slug()
           ) #TODO: this assumes the home slug given is always real
+
         |> Map.put("type", "write")
         |> ensure_valid_json_structure()
         |> ensure_valid_space()
