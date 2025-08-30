@@ -60,16 +60,6 @@ nlu:
     - what's the CO2 level
     - is there motion in the office
     - what's the weather like today
-    - what's 87 divided by 19
-    - how much is 5 times 13
-    - what's 2 to the power of 6
-    - what's the square root of 121
-    - add 56 and 29
-    - subtract 100 from 250
-    - divide 144 by 12
-    - what's 3 factorial
-    - multiply 9 by 7
-    - what is 15 percent of 200
     - what's the average temperature in the house
     - how many devices are currently on
     - is the overhead light brighter than 50%
@@ -109,6 +99,8 @@ nlu:
     - half of 86
     - a quarter of 64
     - 3 cubed
+    - what is two cubed
+    - calculate nine squared
     - 10 to the power of 4
     - 200 minus 75 plus 50
     - what's the remainder of 50 divided by 7
@@ -126,6 +118,7 @@ nlu:
     - 24 multiplied by 365
     - 7 days times 4 weeks
     - 1000 divided by 25
+    - what is nine plus eighteen
 
 - intent: conversation
   examples: |
