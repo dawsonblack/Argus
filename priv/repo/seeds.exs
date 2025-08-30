@@ -69,7 +69,7 @@ Homes.create_appliance_command(appliance,
 # home = Homes.get_home_by_slug("main-apartment")
 # space = Homes.get_space_by_slug(home, "bedroom")
 # appliance = Homes.get_appliance_by_slug(space, "noise-maker")
-# Argus.CommandPipeline.send_command(appliance, "on")
+# Argus.DeviceCommunication.CommandPipeline.send_command(appliance, "on")
 
 
 # If you need to reset the database:

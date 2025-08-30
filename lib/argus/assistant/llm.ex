@@ -1,6 +1,6 @@
-defmodule Assistant.LLM do
-  import Assistant.Embeddings
-  alias Argus.Homes
+defmodule Argus.Assistant.LLM do
+  import Argus.Assistant.Embeddings
+  alias Argus.Assistant.DeviceCapabilities
 
   def prompt_llm(prompt, system_context \\ nil, message_history \\ nil, model \\ "llama3.2:3b-instruct-q4_K_M") do
     messages =
@@ -45,7 +45,7 @@ defmodule Assistant.LLM do
   end
 
 
-  defp prompt_with_rag(sentences, prompt) do
+  defp command_with_rag(sentences, prompt) do
     rag_prompt = "#{prompt}\n---- END USER TEXT ----\n\n"
 
     rag_prompt =
@@ -71,10 +71,10 @@ defmodule Assistant.LLM do
         "- {\"room\":\"bedroom\"} Here's the JSON you asked for...\n" <>
         "- ```json {...} ```\n" <>
         "- {\"room\":\"bedroom\",\"device\":\"noise_maker\",\"command\":\"volume\",\"params\":[,]}"
-    rag_prompt
+    #rag_prompt
   end
 
-  def llm_interpret_command(prompt, home_slug, command_type, max_rag_context \\ 3, min_rag_relevance \\ 0.60,
+  def llm_interpreted_command(prompt, home_slug, command_type, max_rag_context \\ 3, min_rag_relevance \\ 0.60,
               msg_history \\ nil, emb_model \\ "mxbai-embed-large", llm_model \\ "llama3.2:3b-instruct-q4_K_M") do
 
     system_message = "You are Argus's smart-home command parser.\n" <>
@@ -96,9 +96,9 @@ defmodule Assistant.LLM do
       |> Map.get("embedding")
 
     home_slug
-    |> Assistant.DeviceCapabilities.load_capability_embeddings(command_type)
+    |> DeviceCapabilities.load_capability_embeddings(command_type)
     |> get_closest_embeddings(embedded_prompt, max_rag_context, min_rag_relevance)
-    |> prompt_with_rag(prompt)
+    |> command_with_rag(prompt)
     |> prompt_llm(system_message, msg_history, llm_model)
   end
 
@@ -111,6 +111,6 @@ defmodule Assistant.LLM do
   #   |> Homes.get_home_by_slug()
   #   |> Homes.get_space_by_slug(Map.get(json, "room"))
   #   |> Homes.get_appliance_by_slug(appliance)
-  #   |> Argus.CommandPipeline.send_command(Map.get(json, "command"), "write") #TODO: Write command is hardcoded in it shouldn't be
+  #   |> Argus.DeviceCommunication.CommandPipeline.send_command(Map.get(json, "command"), "write") #TODO: Write command is hardcoded in it shouldn't be
   # end
 end

@@ -1,4 +1,4 @@
-defmodule Assistant.DeviceCapabilities do
+defmodule Argus.Assistant.DeviceCapabilities do
   alias Argus.Homes
 
   defp join_with_and([]), do: "This device does not support any commands"
@@ -29,7 +29,7 @@ defmodule Assistant.DeviceCapabilities do
       "priv/device_capabilities/#{home_slug}_#{command_type}.json",
       home_data
       |> device_capability_sentences()
-      |> Assistant.Embeddings.embed()
+      |> Embeddings.embed()
       |> Jason.encode!(pretty: true)
     )
   end

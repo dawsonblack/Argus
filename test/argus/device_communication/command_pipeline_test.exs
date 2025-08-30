@@ -1,7 +1,7 @@
-defmodule Argus.CommandPipelineTest do
+defmodule Argus.DeviceCommunication.CommandPipelineTest do
   use ExUnit.Case, async: true
 
-  alias Argus.CommandPipeline
+  alias Argus.DeviceCommunication.CommandPipeline
 
   test "applies a full JSON-style pipeline to a value" do
     pipeline = [

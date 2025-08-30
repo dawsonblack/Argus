@@ -1,4 +1,4 @@
-defmodule Assistant.Embeddings do
+defmodule Argus.Assistant.Embeddings do
   def embed(texts, model \\ "mxbai-embed-large")
 
   def embed(texts, model) when is_binary(texts), do: embed([texts], model)

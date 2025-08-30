@@ -11,7 +11,7 @@ defmodule ArgusWeb.SpaceLive do
     if connected?(socket) do
       Enum.each(space.appliances, fn appliance ->
         Phoenix.PubSub.subscribe(Argus.PubSub, "appliance:#{appliance.mac_address}")
-        Argus.CommandPipeline.read_from_device(appliance.mac_address)
+        Argus.DeviceCommunication.CommandPipeline.read_from_device(appliance.mac_address)
       end)
     end
 

@@ -1,5 +1,6 @@
-defmodule Argus.DeviceWorker do
+defmodule Argus.DeviceCommunication.DeviceWorker do
   use GenServer
+  alias Argus.DeviceCommunication.CommandPipeline
 
   def start_link(appliance) do
     GenServer.start_link(__MODULE__, appliance, name: via(appliance.id))
@@ -16,7 +17,7 @@ defmodule Argus.DeviceWorker do
 
     init_payload =
       appliance
-      |> Argus.CommandPipeline.command_call_payload("handshake", "lifecycle")
+      |> CommandPipeline.command_call_payload("handshake", "lifecycle")
       |> Map.put("read", "80C37F00-CC16-11E4-8830-0800200C9A66") #TODO: this needs to be retrieved from database
       |> Jason.encode!()
       |> then(&(&1 <> "\n"))

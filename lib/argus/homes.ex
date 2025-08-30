@@ -15,6 +15,41 @@ defmodule Argus.Homes do
   def list_homes, do: Repo.all(Home)
   def list_appliances, do: Repo.all(Appliance)
 
+  def list_spaces_in_home(%Home{id: home_id}) do
+    Space
+    |> where([s], s.home_id == ^home_id)
+    |> Repo.all()
+  end
+
+  def list_appliances_in_space(%Space{id: space_id}) do
+    Appliance
+    |> where([a], a.space_id == ^space_id)
+    |> Repo.all()
+  end
+
+  def list_commands_of_type_in_appliance(%Appliance{id: appliance_id}, command_type) do
+    ApplianceCommand
+    |> where([c], c.appliance_id == ^appliance_id and c.command_type == ^command_type)
+    |> Repo.all()
+  end
+
+  def list_appliances_in_home(%Home{id: home_id}) do
+    from(a in Appliance,
+      join: s in Space, on: s.id == a.space_id,
+      where: s.home_id == ^home_id,
+      select: a
+    )
+    |> Repo.all()
+  end
+
+  def list_commands_of_type_in_space(%Space{id: space_id}, command_type) do
+    from(c in ApplianceCommand,
+      join: a in Appliance, on: a.id == c.appliance_id,
+      where: a.space_id == ^space_id and c.command_type == ^command_type
+    )
+    |> Repo.all()
+  end
+
   def get_home!(id), do: Repo.get!(Home, id)
 
   def get_home_by_slug(slug), do: Repo.get_by(Home, slug: slug)

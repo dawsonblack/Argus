@@ -1,4 +1,4 @@
-defmodule Argus.CommandPipeline do
+defmodule Argus.DeviceCommunication.CommandPipeline do
 
   def read_from_device(mac_address) do
     Phoenix.PubSub.broadcast(
