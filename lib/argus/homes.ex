@@ -89,8 +89,10 @@ defmodule Argus.Homes do
 
   def create_appliance_command(appliance, attrs) do
     attrs =
-      attrs
-      |> Map.update(:command, nil, fn val -> Jason.encode!(val) end)
+    case attrs[:command] do
+      nil -> attrs
+      command -> Map.put(attrs, :command, Jason.encode!(command))
+    end
 
     %ApplianceCommand{}
     |> ApplianceCommand.changeset(attrs)

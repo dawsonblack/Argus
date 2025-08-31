@@ -6,8 +6,6 @@ defmodule Argus.HomesTest do
   describe "Home tests" do
     alias Argus.Homes.Home
 
-    #import Argus.HomesFixtures
-
     test "create a home with valid data" do
       attrs = %{name: "some name", address: "some address"}
       assert {:ok, %Home{} = home} = Homes.create_home(attrs)
@@ -215,11 +213,11 @@ defmodule Argus.HomesTest do
       {:ok, home} = Homes.create_home(%{name: "home", address: "address"})
       {:ok, appliance} = Homes.create_appliance(home, %{name: "appliance", mac_address: "mac"})
 
-      attrs = %{name: "appliance command name", command: "a command", protocol: "bluetooth"}
+      attrs = %{name: "appliance command name", command_type: "lifecycle", command: ["static", [1]], channel: "channel", protocol: "bluetooth"}
       assert {:ok, %ApplianceCommand{} = appliance_command} = Homes.create_appliance_command(appliance, attrs)
 
       assert appliance_command.name == "appliance command name"
-      assert appliance_command.command == "a command"
+      assert appliance_command.command == Jason.encode!(["static", [1]])
       assert appliance_command.protocol == "bluetooth"
       assert appliance_command.appliance_id == appliance.id
     end
@@ -229,13 +227,16 @@ defmodule Argus.HomesTest do
       {:ok, home} = Homes.create_home(%{name: "home", address: "address"})
       {:ok, appliance} = Homes.create_appliance(home, %{name: "appliance", mac_address: "mac"})
 
-      attrs = %{name: nil, command: "a command", protocol: "bluetooth"}
+      attrs = %{name: nil, command_type: "write", command: "a command", channel: "channel", protocol: "bluetooth"}
       assert {:error, %Ecto.Changeset{}} = Homes.create_appliance_command(appliance, attrs)
 
-      attrs = %{name: "appliance command name", command: nil, protocol: "bluetooth"}
+      attrs = %{name: "appliance command name", command_type: nil, command: "a command", channel: "channel", protocol: "bluetooth"}
       assert {:error, %Ecto.Changeset{}} = Homes.create_appliance_command(appliance, attrs)
 
-      attrs = %{name: "appliance command name", command: "a command", protocol: nil}
+      attrs = %{name: "appliance command name", command_type: "read", command: nil, channel: "channel", protocol: "bluetooth"}
+      assert {:error, %Ecto.Changeset{}} = Homes.create_appliance_command(appliance, attrs)
+
+      attrs = %{name: "appliance command name", command_type: "read", command: "a command", channel: "channel", protocol: nil}
       assert {:error, %Ecto.Changeset{}} = Homes.create_appliance_command(appliance, attrs)
     end
   end
