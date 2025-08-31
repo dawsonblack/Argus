@@ -1,8 +1,13 @@
-defmodule Assistant.LLM do
-  import Assistant.Embeddings
-  alias Argus.Homes
+defmodule Argus.Assistant.LLM do
+  import Argus.Assistant.Embeddings
+  alias Argus.Assistant.DeviceCapabilities
 
-  def prompt_llm(prompt, system_context \\ nil, message_history \\ nil, model \\ "llama3.2:3b-instruct-q4_K_M") do
+  def prompt_llm(prompt, system_context \\ nil, message_history \\ nil) do
+    model = Application.get_env(:argus, :ollama_model)
+    port = Application.get_env(:argus, :ollama_port)
+
+    Application.get_env(:argus, :ollama_model)
+
     messages =
       (case message_history do
          nil -> []
@@ -20,7 +25,7 @@ defmodule Assistant.LLM do
 
     headers = [{"Content-Type", "application/json"}]
 
-    case HTTPoison.post("http://localhost:11434/api/chat", Jason.encode!(payload), headers) do
+    case HTTPoison.post("http://localhost:#{port}/api/chat", Jason.encode!(payload), headers) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         with {:ok, decoded} <- Jason.decode(body),
              content when is_binary(content) <- get_in(decoded, ["message", "content"]) do
@@ -45,7 +50,7 @@ defmodule Assistant.LLM do
   end
 
 
-  defp command_rag_prompt(sentences, prompt) do
+  defp command_with_rag(sentences, prompt) do
     rag_prompt = "#{prompt}\n---- END USER TEXT ----\n\n"
 
     rag_prompt =
@@ -71,12 +76,11 @@ defmodule Assistant.LLM do
         "- {\"room\":\"bedroom\"} Here's the JSON you asked for...\n" <>
         "- ```json {...} ```\n" <>
         "- {\"room\":\"bedroom\",\"device\":\"noise_maker\",\"command\":\"volume\",\"params\":[,]}"
-    IO.puts(rag_prompt)
-    rag_prompt
+    #rag_prompt
   end
 
-  def llm_interpret_command(prompt, home_data, max_rag_context \\ 3, min_rag_relevance \\ 0.60,
-              msg_history \\ nil, emb_model \\ "mxbai-embed-large", llm_model \\ "llama3.2:3b-instruct-q4_K_M") do
+  def llm_interpreted_command(prompt, home_slug, command_type, max_rag_context \\ 3, min_rag_relevance \\ 0.60,
+              msg_history \\ nil) do
 
     system_message = "You are Argus's smart-home command parser.\n" <>
       "Return ONLY valid JSON in this exact schema (no extra text, no code fences):\n{\n" <>
@@ -92,28 +96,26 @@ defmodule Assistant.LLM do
 
     embedded_prompt =
       prompt
-      |> embed(emb_model)
+      |> embed()
       |> List.first()
       |> Map.get("embedding")
 
-    home_data
-    |> device_capability_sentences()
-    |> embed(emb_model)
+    home_slug
+    |> DeviceCapabilities.load_capability_embeddings(command_type)
     |> get_closest_embeddings(embedded_prompt, max_rag_context, min_rag_relevance)
-    |> command_rag_prompt(prompt)
-    |> prompt_llm(system_message, msg_history, llm_model)
+    |> command_with_rag(prompt)
+    |> prompt_llm(system_message, msg_history)
   end
 
-  def temp(prompt, home_data) do
-    json = llm_interpret_command(prompt, home_data)
-    IO.puts(json)
-    json = Jason.decode!(json)
-    appliance = String.replace(Map.get(json, "device"), "_", "-")
+  # def temp(prompt, home_data) do
+  #   json = llm_interpret_command(prompt, home_data)
+  #   json = Jason.decode!(json)
+  #   appliance = String.replace(Map.get(json, "device"), "_", "-")
 
-    "main-apartment"
-    |> Homes.get_home_by_slug()
-    |> Homes.get_space_by_slug(Map.get(json, "room"))
-    |> Homes.get_appliance_by_slug(appliance)
-    |> Argus.CommandPipeline.send_command(Map.get(json, "command"), "write") #TODO: Write command is hardcoded in it shouldn't be
-  end
+  #   "main-apartment"
+  #   |> Homes.get_home_by_slug()
+  #   |> Homes.get_space_by_slug(Map.get(json, "room"))
+  #   |> Homes.get_appliance_by_slug(appliance)
+  #   |> Argus.DeviceCommunication.CommandPipeline.send_command(Map.get(json, "command"), "write") #TODO: Write command is hardcoded in it shouldn't be
+  # end
 end

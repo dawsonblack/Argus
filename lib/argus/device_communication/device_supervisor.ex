@@ -1,4 +1,4 @@
-defmodule Argus.DeviceSupervisor do
+defmodule Argus.DeviceCommunication.DeviceSupervisor do
   use Supervisor
 
   def start_link(_arg) do
@@ -11,7 +11,7 @@ defmodule Argus.DeviceSupervisor do
       |> Enum.map(fn appliance ->
         %{
           id: {:device, appliance.id},
-          start: {Argus.DeviceWorker, :start_link, [appliance]}
+          start: {Argus.DeviceCommunication.DeviceWorker, :start_link, [appliance]}
         }
       end)
 

@@ -22,6 +22,8 @@ defmodule ArgusWeb.Router do
     live "/homes/:slug", HomeLive
     live "/homes/:home_slug/:space_slug", SpaceLive
     live "/homes/:home_slug/:space_slug/:appliance_slug", ApplianceLive
+
+    live "/chat", ChatLive
   end
 
   scope "/api", ArgusWeb.Api do

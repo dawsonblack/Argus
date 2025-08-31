@@ -4,7 +4,7 @@ defmodule ArgusWeb.Api.ApplianceController do
   import ArgusWeb.Api.StatusCodes
 
   alias Argus.Homes
-  alias Argus.CommandPipeline
+  alias Argus.DeviceCommunication.CommandPipeline
 
   def read_from_device(conn, %{"home_slug" => home_slug, "space_slug" => space_slug,
                                                     "appliance_slug" => appliance_slug, "command_name" => command_name}) do

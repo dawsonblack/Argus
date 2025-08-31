@@ -15,6 +15,41 @@ defmodule Argus.Homes do
   def list_homes, do: Repo.all(Home)
   def list_appliances, do: Repo.all(Appliance)
 
+  def list_spaces_in_home(%Home{id: home_id}) do
+    Space
+    |> where([s], s.home_id == ^home_id)
+    |> Repo.all()
+  end
+
+  def list_appliances_in_space(%Space{id: space_id}) do
+    Appliance
+    |> where([a], a.space_id == ^space_id)
+    |> Repo.all()
+  end
+
+  def list_commands_of_type_in_appliance(%Appliance{id: appliance_id}, command_type) do
+    ApplianceCommand
+    |> where([c], c.appliance_id == ^appliance_id and c.command_type == ^command_type)
+    |> Repo.all()
+  end
+
+  def list_appliances_in_home(%Home{id: home_id}) do
+    from(a in Appliance,
+      join: s in Space, on: s.id == a.space_id,
+      where: s.home_id == ^home_id,
+      select: a
+    )
+    |> Repo.all()
+  end
+
+  def list_commands_of_type_in_space(%Space{id: space_id}, command_type) do
+    from(c in ApplianceCommand,
+      join: a in Appliance, on: a.id == c.appliance_id,
+      where: a.space_id == ^space_id and c.command_type == ^command_type
+    )
+    |> Repo.all()
+  end
+
   def get_home!(id), do: Repo.get!(Home, id)
 
   def get_home_by_slug(slug), do: Repo.get_by(Home, slug: slug)
@@ -54,8 +89,10 @@ defmodule Argus.Homes do
 
   def create_appliance_command(appliance, attrs) do
     attrs =
-      attrs
-      |> Map.update(:command, nil, fn val -> Jason.encode!(val) end)
+    case attrs[:command] do
+      nil -> attrs
+      command -> Map.put(attrs, :command, Jason.encode!(command))
+    end
 
     %ApplianceCommand{}
     |> ApplianceCommand.changeset(attrs)
@@ -102,5 +139,28 @@ defmodule Argus.Homes do
 
   def appliance_changeset(%Appliance{} = appliance, attrs \\ %{}) do
     Appliance.changeset(appliance, attrs)
+  end
+
+  def appliance_commands_struct(home_id, command_type) do
+    from(s in Space,
+      where: s.home_id == ^home_id,
+      join: a in assoc(s, :appliances),
+      join: c in assoc(a, :appliance_commands),
+      where: c.command_type == ^command_type,
+      select: {s.slug, a.slug, c.name}
+    )
+    |> Repo.all()
+    |> Enum.group_by(fn {space, _, _} -> space end)
+    |> Enum.map(fn {space, triples} ->
+      devices =
+        triples
+        |> Enum.group_by(fn {_, appliance, _} -> appliance end,
+                         fn {_, _, cmd} -> cmd end)
+        |> Enum.map(fn {appliance, cmds} -> {appliance, Enum.uniq(cmds)} end)
+        |> Map.new()
+
+      {space, devices}
+    end)
+    |> Map.new()
   end
 end
