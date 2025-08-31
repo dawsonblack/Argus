@@ -17,8 +17,8 @@ defmodule Argus.Assistant do
   def handle_info({:user_message, message}, state) do
     Phoenix.PubSub.broadcast(Argus.PubSub, @topic, {:assistant_status, :typing})
 
-    response = CommandParsing.parse_message(message)
-    case Chat.create_message(%{sender: "assistant", modality: "typed", text: response}) do
+    response = CommandParsing.parse_message(message[:text])
+    case Chat.create_message(%{sender: "assistant", modality: message[:modality], text: response}) do
       {:ok, reply} ->
         Phoenix.PubSub.broadcast(Argus.PubSub, @topic, {:assistant_message, reply})
       _ ->

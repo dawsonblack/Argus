@@ -7,6 +7,14 @@ defmodule Argus.Chat do
 
   def list_messages, do: Repo.all(Message)
 
+  def list_recent_messages(limit \\ 50) do
+    Message
+    |> order_by([m], [desc: m.inserted_at, desc: m.id])
+    |> limit(^limit)
+    |> Repo.all()
+    |> Enum.reverse()
+  end
+
   def get_message!(id), do: Repo.get!(Message, id)
 
   def create_message(attrs \\ %{}) do

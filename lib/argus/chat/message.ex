@@ -7,6 +7,7 @@ defmodule Argus.Chat.Message do
     field :modality, :string
     field :text, :string
     timestamps(updated_at: false, type: :utc_datetime_usec)
+    #TODO: add an intent label
   end
 
   @doc false

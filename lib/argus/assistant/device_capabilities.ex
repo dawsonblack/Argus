@@ -38,7 +38,7 @@ defmodule Argus.Assistant.DeviceCapabilities do
     homes = Homes.list_homes()
     Enum.each(homes, fn %{id: id, slug: slug} ->
       Enum.each(["read", "write", "lifecycle"], fn command_type ->
-        home_data = Homes.appliance_commands_struct(id, command_type)
+        home_data = Homes.appliance_commands_map(id, command_type)
         generate_device_capabilities_export(home_data, slug, command_type)
         {slug, command_type}
       end)
