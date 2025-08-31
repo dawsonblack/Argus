@@ -35,39 +35,43 @@ defmodule Argus.Assistant.CommandParsing do
         IO.puts("action")
         #TODO: Write should maybe not be hardcoded (see the line below where it puts type into json as well). When will you use lifecycle? Will you ever need to? What about read and write?
         #TODO: home slug should not be hardcoded. Once it is not you will need to ensure it's a valid home slug
-        LLM.llm_interpreted_command(message, "main-apartment", "write")
-        |> String.replace("'", "\"")
-        |> json_decode_or_nil()
-        |> IO.inspect()
-        |> maybe_put(
-            "home",
-            "main-apartment" |> Homes.get_home_by_slug()
-          ) #TODO: this assumes the home slug given is always real
+        response = LLM.llm_interpreted_command(message, "main-apartment", "write")
+        "I'm not wired into the actual devices right now, but I parsed your command:\n\n#{response}"
 
-        |> maybe_put("type", "write")
-        |> ensure_valid_json_structure()
-        |> ensure_valid_space()
-        |> IO.inspect()
-        |> ensure_valid_appliance()
-        |> IO.inspect()
-        |> ensure_valid_command()
-        #|> TODO: validate the user parameters and pass them in
-        #CHANGEME just commenting this out for testing the above pipeline
-        |> case do
-          nil -> %{:error => %{:message => "Either the space, appliance, or command could not be determined"}}
-          command_json ->
-            appliance = command_json["device"]
-            command_name = command_json["command"].name
-            command_type = "write" #TODO: Possibly don't harcode this
-            CommandPipeline.send_command(appliance, command_name, command_type)
-        end
+        #TODO: uncomment this, this is just blocked out temporarily for setting up the message UI
+        # |> String.replace("'", "\"")
+        # |> json_decode_or_nil()
+        # |> IO.inspect()
+        # |> maybe_put(
+        #     "home",
+        #     "main-apartment" |> Homes.get_home_by_slug()
+        #   ) #TODO: this assumes the home slug given is always real
+
+        # |> maybe_put("type", "write")
+        # |> ensure_valid_json_structure()
+        # |> ensure_valid_space()
+        # |> IO.inspect()
+        # |> ensure_valid_appliance()
+        # |> IO.inspect()
+        # |> ensure_valid_command()
+        # #|> TODO: validate the user parameters and pass them in
+        # #CHANGEME just commenting this out for testing the above pipeline
+        # |> case do
+        #   nil -> %{:error => %{:message => "Either the space, appliance, or command could not be determined"}}
+        #   command_json ->
+        #     appliance = command_json["device"]
+        #     command_name = command_json["command"].name
+        #     command_type = "write" #TODO: Possibly don't harcode this
+        #     CommandPipeline.send_command(appliance, command_name, command_type)
+        # end
 
 
         #|> maybe get the params. Add them if you see them and return nil otherwise #TODO: you need to verify that the params are the proper object. Consider adding a regex into the commands stored in the database or something
 
       "information" ->
         IO.puts("read")
-        LLM.llm_interpreted_command(message, "main-apartment", "read")
+        response = LLM.llm_interpreted_command(message, "main-apartment", "read")
+        "I'm not wired into the actual devices right now, but I parsed your command:\n\n#{response}"
 
       "arithmetic" ->
         IO.puts("you doin maffs")

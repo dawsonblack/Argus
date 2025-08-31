@@ -2,6 +2,7 @@ defmodule ArgusWeb.HomesListLive do
   use ArgusWeb, :live_view
   import ArgusWeb.UIComponents
   alias Argus.Homes
+
   def mount(_params, _session, socket) do
     homes = Homes.list_homes()
     {:ok,
