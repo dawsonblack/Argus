@@ -10,7 +10,7 @@ defmodule Argus.DeviceCommunication.CommandPipelineTest do
       ["reverse", 1]
     ]
 
-    result = CommandPipeline.apply_value_pipeline(pipeline, 50)
+    result = CommandPipeline.rf_command(pipeline, 50)
 
     assert result == [1, 2]  # 49 = "1" in ASCII, then reversed and binary-encoded
   end

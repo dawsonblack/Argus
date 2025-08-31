@@ -3,6 +3,19 @@ defmodule Argus.Assistant.CommandParser.ValidateCommandJson do
   alias Argus.Homes
   import Argus.Homes
 
+  def json_decode_or_nil(s) do
+    case Jason.decode(s) do
+      {:ok, json} -> json
+      _ -> nil
+    end
+  end
+
+  def maybe_put(nil, _k, _v), do: nil
+  def maybe_put(map, k, v) do
+    Map.put(map, k, v)
+  end
+
+  def ensure_valid_json_structure(nil), do: nil
   def ensure_valid_json_structure(command_json) do
     command_json =
       Map.new(command_json, fn {k, v} ->
@@ -141,7 +154,7 @@ defmodule Argus.Assistant.CommandParser.ValidateCommandJson do
   def ensure_valid_command(%{"device" => appliance, "command" => command_name} = command_json) do
     command_type = command_json["type"]
 
-    get_appliance_command_by_name_and_type(appliance, command_name, command_type) ||
+    (get_appliance_command_by_name_and_type(appliance, command_name, command_type) ||
       appliance
       |> list_commands_of_type_in_appliance(command_type)
       |> Enum.map(fn %{name: name} -> name end)
@@ -149,7 +162,7 @@ defmodule Argus.Assistant.CommandParser.ValidateCommandJson do
       |> case do
         [%{text: closest_name}] -> get_appliance_command_by_name_and_type(appliance, closest_name, command_type)
         _ -> nil
-      end
+      end)
 
     |> case do
       nil -> nil

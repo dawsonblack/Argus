@@ -9,29 +9,38 @@ defmodule Argus.DeviceCommunication.CommandPipeline do
   end
 
   def send_command(appliance, command_name, command_type, user_input \\ nil) do
+    command = Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, command_type)
+
+    payload = %{
+      mac_address: appliance.mac_address,
+      channel: command.channel,
+      command:
+        command.command
+        |> Jason.decode!()
+        |> rf_command(user_input)
+    }
+
     Phoenix.PubSub.broadcast(
       Argus.PubSub,
       "appliance:#{appliance.mac_address}",
-      {:send_command, command_call_payload(appliance, command_name, command_type, user_input)}
+      {:send_command, payload}
     )
   end
 
-  def command_call_payload(appliance, command_name, command_type, user_input \\ nil) do
+  def command_call_payload(appliance, command_name, command_type, user_input \\ nil) do  #TODO: this is redundant code from send_command but it is used in device worker
     cmd = Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, command_type)
-
-    command =
+    rf_command =
       cmd.command
       |> Jason.decode!()
-      |> generate_command(user_input)
-
+      |> rf_command(user_input)
     %{
       mac_address: appliance.mac_address,
       channel: cmd.channel,
-      command: command
+      command: rf_command
     }
   end
 
-  defp generate_command(pipeline_steps, initial_value) when is_list(pipeline_steps) do #TODO: only allow for commands with one user input currently
+  def rf_command(pipeline_steps, initial_value) when is_list(pipeline_steps) do #TODO: only allow for commands with one user input currently
     Enum.reduce(pipeline_steps, initial_value, fn
       [step | args], acc ->
         apply_pipeline_step(step, [acc] ++ args)

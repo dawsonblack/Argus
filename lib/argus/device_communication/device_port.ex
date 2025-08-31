@@ -1,3 +1,6 @@
+#CHANGEME you can probably delete this, I think this is old code from when you explicitly connected to only one device.
+#Last time using this code was likely before August 1, 2025
+
 # defmodule Argus.DevicePort do
 #   use GenServer
 

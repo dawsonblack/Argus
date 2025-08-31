@@ -36,20 +36,23 @@ defmodule Argus.Assistant.CommandParsing do
         #TODO: Write should maybe not be hardcoded (see the line below where it puts type into json as well). When will you use lifecycle? Will you ever need to? What about read and write?
         #TODO: home slug should not be hardcoded. Once it is not you will need to ensure it's a valid home slug
         LLM.llm_interpreted_command(message, "main-apartment", "write")
-        #|> TODO: you need to make sure the json is legit form first
-        |> Jason.decode!()
-        #|> TODO: make sure the json follows protocols
-        |> Map.put(
+        |> String.replace("'", "\"")
+        |> json_decode_or_nil()
+        |> IO.inspect()
+        |> maybe_put(
             "home",
             "main-apartment" |> Homes.get_home_by_slug()
           ) #TODO: this assumes the home slug given is always real
 
-        |> Map.put("type", "write")
+        |> maybe_put("type", "write")
         |> ensure_valid_json_structure()
         |> ensure_valid_space()
+        |> IO.inspect()
         |> ensure_valid_appliance()
+        |> IO.inspect()
         |> ensure_valid_command()
-        #|> validate the user parameters and pass them in
+        #|> TODO: validate the user parameters and pass them in
+        #CHANGEME just commenting this out for testing the above pipeline
         |> case do
           nil -> %{:error => %{:message => "Either the space, appliance, or command could not be determined"}}
           command_json ->
@@ -57,7 +60,6 @@ defmodule Argus.Assistant.CommandParsing do
             command_name = command_json["command"].name
             command_type = "write" #TODO: Possibly don't harcode this
             CommandPipeline.send_command(appliance, command_name, command_type)
-
         end
 
 
