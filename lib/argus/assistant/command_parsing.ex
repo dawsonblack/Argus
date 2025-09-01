@@ -52,17 +52,6 @@ defmodule Argus.Assistant.CommandParsing do
         |> ensure_valid_appliance()
         |> ensure_valid_command()
         #|> TODO: validate the user parameters and pass them in
-        #CHANGEME just commenting this out for testing the above pipeline
-        # |> case do
-        #   nil -> %{:error => %{:message => "Either the space, appliance, or command could not be determined"}}
-        #   command_json ->
-        #     appliance = command_json["device"]
-        #     command_name = command_json["command"].name
-        #     command_type = "write" #TODO: Possibly don't harcode this
-        #     CommandPipeline.send_command(appliance, command_name, command_type)
-        # end
-
-
         #|> maybe get the params. Add them if you see them and return nil otherwise #TODO: you need to verify that the params are the proper object. Consider adding a regex into the commands stored in the database or something
 
       "information" ->
