@@ -2,7 +2,6 @@ defmodule Argus.Assistant do
   use GenServer
 
   alias Argus.Chat
-  alias Argus.Chat.Message
   alias Argus.Assistant.CommandParsing
   alias Argus.DeviceCommunication.CommandPipeline
 

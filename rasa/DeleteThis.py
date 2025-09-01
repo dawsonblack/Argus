@@ -1,3 +1,5 @@
+##CHANGEME Have not used this since before August 31, 2025, but there might be important stuff to check
+
 import requests
 import json
 import requests, numpy as np

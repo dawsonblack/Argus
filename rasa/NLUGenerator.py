@@ -1,4 +1,4 @@
-#last time I used this was before August 23 2025, this might be deletable
+#CHANGEME last time I used this was before August 23 2025, this might be deletable
 
 from transformers import pipeline
 
