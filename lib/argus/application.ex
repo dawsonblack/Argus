@@ -20,9 +20,9 @@ defmodule Argus.Application do
       ArgusWeb.Endpoint,
 
       {Registry, keys: :unique, name: Argus.DeviceRegistry},
-      Argus.Assistant
+      Argus.Assistant,
       #CHANGEME when you don't want devices to be conected to automatically on startup. Will fail if database does not have real device data
-      #Argus.DeviceCommunication.DeviceSupervisor
+      Argus.DeviceCommunication.DeviceSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
