@@ -27,9 +27,10 @@ defmodule Argus.HomesTest do
 
     test "does not allow duplicate slugs" do
       attrs = %{name: "some name", address: "some address"}
+      attrs2 = %{name: "SOME_nAme", address: "some address"}
 
       {:ok, _home1} = Homes.create_home(attrs)
-      {:error, changeset} = Homes.create_home(attrs)
+      {:error, changeset} = Homes.create_home(attrs2)
 
       assert %{slug: ["has already been taken"]} = errors_on(changeset)
     end
@@ -101,8 +102,9 @@ defmodule Argus.HomesTest do
       {:ok, home} = Homes.create_home(%{name: "some name", address: "some address"})
 
       attrs = %{name: "space name"}
+      attrs2 = %{name: "SPACE_nAme"}
       {:ok, _space1} = Homes.create_space(home, attrs)
-      {:error, changeset} = Homes.create_space(home, attrs)
+      {:error, changeset} = Homes.create_space(home, attrs2)
 
       assert %{slug: ["has already been taken"]} = errors_on(changeset)
     end
@@ -166,11 +168,12 @@ defmodule Argus.HomesTest do
       {:ok, space} = Homes.create_space(home, %{name: "space"})
 
       attrs = %{name: "appliance name", mac_address: "mac"}
+      attrs2 = %{name: "APPLIANCE_NaMe", mac_address: "mac"}
       {:ok, _space} = Homes.create_appliance(home, attrs)
       {:ok, _space} = Homes.create_appliance(space, attrs)
 
-      {:error, changeset1} = Homes.create_appliance(home, attrs)
-      {:error, changeset2} = Homes.create_appliance(space, attrs)
+      {:error, changeset1} = Homes.create_appliance(home, attrs2)
+      {:error, changeset2} = Homes.create_appliance(space, attrs2)
 
       assert %{slug: ["has already been taken"]} = errors_on(changeset1)
       assert %{slug: ["has already been taken"]} = errors_on(changeset2)

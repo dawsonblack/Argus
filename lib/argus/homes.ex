@@ -141,7 +141,7 @@ defmodule Argus.Homes do
     Appliance.changeset(appliance, attrs)
   end
 
-  def appliance_commands_struct(home_id, command_type) do
+  def appliance_commands_map(home_id, command_type) do
     from(s in Space,
       where: s.home_id == ^home_id,
       join: a in assoc(s, :appliances),

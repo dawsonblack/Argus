@@ -32,7 +32,7 @@ defmodule Argus.Assistant.CommandParser.ValidateCommandJson do
     if Enum.all?(["room", "device", "command", "params"], &Map.has_key?(command_json, &1)) do
       command_json
     else
-      nil #TODO: consider making this an error struct for better logging
+      nil #TODO: consider making this an error map for better logging
     end
   end
 

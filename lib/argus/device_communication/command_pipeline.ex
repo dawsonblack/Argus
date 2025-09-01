@@ -20,11 +20,24 @@ defmodule Argus.DeviceCommunication.CommandPipeline do
         |> rf_command(user_input)
     }
 
-    Phoenix.PubSub.broadcast(
+    :ok = Phoenix.PubSub.subscribe(Argus.PubSub, "appliance:#{appliance.mac_address}")
+
+    :ok = Phoenix.PubSub.broadcast_from(
       Argus.PubSub,
+      self(),
       "appliance:#{appliance.mac_address}",
       {:send_command, payload}
     )
+
+    response =
+      receive do
+        msg -> msg
+      after
+        5000 -> :timeout
+      end
+
+    Phoenix.PubSub.unsubscribe(Argus.PubSub, "appliance:#{appliance.mac_address}")
+    response
   end
 
   def command_call_payload(appliance, command_name, command_type, user_input \\ nil) do  #TODO: this is redundant code from send_command but it is used in device worker

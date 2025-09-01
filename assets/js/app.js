@@ -89,6 +89,37 @@ Hooks.RepeatClick = {
   }
 }
 
+Hooks.ScrollBottom = {
+  mounted() { this.scroll() },
+  updated() { this.scroll() },
+  scroll() {
+    requestAnimationFrame(() => {
+      const el = this.el
+      el.scrollTop = el.scrollHeight
+    })
+  }
+}
+
+Hooks.EnterToSend = {
+  mounted() {
+    this.el.addEventListener("keydown", (e) => {
+      // Don't interfere with IME composition (e.g., Japanese)
+      if (e.isComposing) return
+
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault()
+        // Submit the parent form so LiveView runs your phx-submit="send"
+        if (this.el.form?.requestSubmit) {
+          this.el.form.requestSubmit()
+        } else {
+          // fallback
+          this.el.form?.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }))
+        }
+      }
+    })
+  }
+}
+
 
 
 export default Hooks
