@@ -3,7 +3,6 @@ defmodule ArgusWeb.ChatLive do
   use ArgusWeb, :live_view
   alias Argus.Chat
   alias Argus.Chat.Message
-  alias Argus.Assistant.CommandParsing
 
   @topic "chat:global"
 
@@ -24,7 +23,7 @@ defmodule ArgusWeb.ChatLive do
       message = %{sender: "Dawson", modality: "typed", text: text}
       case Chat.create_message(message) do #TODO: Dawson shouldn't be hardcoded, find a way to get the user
         {:ok, _message} ->
-          Phoenix.PubSub.broadcast(Argus.PubSub, @topic, {:user_message, message})
+          Phoenix.PubSub.broadcast_from(Argus.PubSub, self(), @topic, {:user_message, message})
           {:noreply, assign(socket, messages: Chat.list_messages())}
 
         {:error, changeset} ->
@@ -39,6 +38,10 @@ defmodule ArgusWeb.ChatLive do
 
   def handle_info({:assistant_status, :typing}, socket) do
     {:noreply, assign(socket, typing: true)}
+  end
+
+  def handle_info({:assistant_status, :still_waiting}, socket) do
+    {:noreply, assign(socket, messages: Chat.list_messages(), typing: true)}
   end
 
   def handle_info({:assistant_message, %Message{}}, socket) do

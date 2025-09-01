@@ -33,12 +33,10 @@ defmodule Argus.DeviceCommunication.CommandPipeline do
       receive do
         msg -> msg
       after
-        10000 -> :timeout
+        5000 -> :timeout
       end
 
     Phoenix.PubSub.unsubscribe(Argus.PubSub, "appliance:#{appliance.mac_address}")
-
-    IO.inspect(response)
     response
   end
 
