@@ -106,16 +106,4 @@ defmodule Argus.Assistant.LLM do
     |> command_with_rag(prompt)
     |> prompt_llm(system_message, msg_history)
   end
-
-  # def temp(prompt, home_data) do
-  #   json = llm_interpret_command(prompt, home_data)
-  #   json = Jason.decode!(json)
-  #   appliance = String.replace(Map.get(json, "device"), "_", "-")
-
-  #   "main-apartment"
-  #   |> Homes.get_home_by_slug()
-  #   |> Homes.get_space_by_slug(Map.get(json, "room"))
-  #   |> Homes.get_appliance_by_slug(appliance)
-  #   |> Argus.DeviceCommunication.CommandPipeline.send_command(Map.get(json, "command"), "write") #TODO: Write command is hardcoded in it shouldn't be
-  # end
 end

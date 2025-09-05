@@ -21,7 +21,7 @@ defmodule ArgusWeb.ChatLive do
       {:noreply, socket}
     else
       message = %{sender: "Dawson", modality: "typed", text: text}
-      case Chat.create_message(message) do #TODO: Dawson shouldn't be hardcoded, find a way to get the user
+      case Chat.create_message(message) do #TODO: Dawson shouldn't be hardcoded, find a way to get the user. Make sure you avoid the exploit of a user setting their name as assistant or system and controlling context
         {:ok, _message} ->
           Phoenix.PubSub.broadcast_from(Argus.PubSub, self(), @topic, {:user_message, message})
           {:noreply, assign(socket, messages: Chat.list_messages())}

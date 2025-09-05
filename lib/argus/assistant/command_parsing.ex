@@ -34,18 +34,14 @@ defmodule Argus.Assistant.CommandParsing do
     case intent do
       "action" ->
         IO.puts("action")
-        #TODO: Write should maybe not be hardcoded (see the line below where it puts type into json as well). When will you use lifecycle? Will you ever need to? What about read and write?
         #TODO: home slug should not be hardcoded. Once it is not you will need to ensure it's a valid home slug
         LLM.llm_interpreted_command(message, "main-apartment", "write")
-        #"I'm not wired into the actual devices right now, but I parsed your command:\n\n#{response}"
-
-        #TODO: uncomment this, this is just blocked out temporarily for setting up the message UI
         |> String.replace("'", "\"")
         |> json_decode_or_nil()
         |> maybe_put(
             "home",
             "main-apartment" |> Homes.get_home_by_slug()
-          ) #TODO: this assumes the home slug given is always real
+          )
         |> maybe_put("type", "write")
         |> ensure_valid_json_structure()
         |> ensure_valid_space()

@@ -36,7 +36,6 @@ defmodule Argus.Assistant.CommandParser.ValidateCommandJson do
     end
   end
 
-  #TODO: if the space is nil then throwing that into a homes function will mess things up
   def ensure_valid_space(nil), do: nil
   def ensure_valid_space(%{"room" => nil} = command_json), do: command_json
   def ensure_valid_space(command_json) do
@@ -179,8 +178,8 @@ defmodule Argus.Assistant.CommandParser.ValidateCommandJson do
         |> List.first()
         |> Map.get("embedding"),
 
-        1, #max results
-        0.80 #TODO: for this you may benefit from a higher relevance threshold than 0.6, experiment with it
+        1, # max results
+        0.80 # minimum relevance   #TODO: 0.8 might be too strict
       )
   end
 end
