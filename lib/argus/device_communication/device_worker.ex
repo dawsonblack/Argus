@@ -17,7 +17,7 @@ defmodule Argus.DeviceCommunication.DeviceWorker do
 
     init_payload =
       appliance
-      |> CommandPipeline.command_call_payload("handshake", "lifecycle")
+      |> CommandPipeline.device_command_payload("handshake", "lifecycle") #TODO: what if this doesn't exist
       |> Map.put("read", "80C37F00-CC16-11E4-8830-0800200C9A66") #TODO: this needs to be retrieved from database
       |> Jason.encode!()
       |> then(&(&1 <> "\n"))
