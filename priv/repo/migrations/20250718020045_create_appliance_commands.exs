@@ -7,7 +7,7 @@ defmodule Argus.Repo.Migrations.CreateApplianceCommands do
       add :command_type, :string, null: false
       add :protocol, :string, null: false
       add :command, :string, null: false
-      add :channel, :string
+      add :uuid, :string
       add :appliance_id, references(:appliances, on_delete: :nothing), null: false
 
       timestamps(type: :utc_datetime)

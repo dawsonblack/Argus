@@ -36,6 +36,9 @@ npm-debug.log
 /assets/node_modules/
 
 /venv
+/.tts_venv
 /rasa/.rasa
 /rasa/intent/.rasa
 /rasa/write_commands/.rasa
+
+/TTS

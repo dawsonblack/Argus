@@ -30,7 +30,11 @@ defmodule Argus.Assistant do
         command_type = if intent == :action, do: "write", else: "read"
 
 
-        send_command = Task.async(fn -> CommandPipeline.send_command(appliance, command_name, command_type) end)
+        send_command =
+          case intent do
+            :action -> Task.async(fn -> CommandPipeline.write_to_device(appliance, command_name, command_type) end)
+            :information -> Task.async(fn -> CommandPipeline.read_from_device(appliance, command_name) end)
+          end
 
         delay_message = Task.async(
           fn ->

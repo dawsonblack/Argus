@@ -52,7 +52,7 @@ Navigation is done via LiveView, with seamless transitions between states and li
 - `commnand_type` which can be either `read`, `write`, or `lifecycle`
 - `name` (e.g., `on`, `off`, `volume`)
 - `protocol` (e.g., `bluetooth`, `zigbee`)
-- `channel`
+- `uuid`
 - `command` (a static binary or dynamic JSON pipeline)
 - `appliance_id` (FK)
 

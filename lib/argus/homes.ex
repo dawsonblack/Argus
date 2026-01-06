@@ -33,6 +33,12 @@ defmodule Argus.Homes do
     |> Repo.all()
   end
 
+  def list_reads_for_uuid(%Appliance{id: appliance_id}, uuid) do
+    ApplianceCommands
+    |> where([c], c.appliance_id == ^appliance_id and c.uuid == ^uuid and c.command_type == "read")
+    |> Repo.all()
+  end
+
   def list_appliances_in_home(%Home{id: home_id}) do
     from(a in Appliance,
       join: s in Space, on: s.id == a.space_id,

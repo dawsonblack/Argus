@@ -36,33 +36,53 @@ Homes.create_appliance_command(appliance,
       %{name: "handshake",
       command_type: "lifecycle",
       protocol: "bluetooth",
-      channel: "90759319-1668-44da-9ef3-492d593bd1e5",
+      uuid: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["static", [0x06, 0xE0, 0xE2, 0xE6, 0x6D, 0xA8, 0xC8, 0xFF, 0xFF]]]})
 
 Homes.create_appliance_command(appliance,
       %{name: "on",
       command_type: "write",
       protocol: "bluetooth",
-      channel: "90759319-1668-44da-9ef3-492d593bd1e5",
+      uuid: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["static", [0x02, 0x01]]]})
 
 Homes.create_appliance_command(appliance,
       %{name: "off",
       command_type: "write",
       protocol: "bluetooth",
-      channel: "90759319-1668-44da-9ef3-492d593bd1e5",
+      uuid: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["static", [0x02, 0x00]]]})
 
 Homes.create_appliance_command(appliance,
       %{name: "volume",
       command_type: "write",
       protocol: "bluetooth",
-      channel: "90759319-1668-44da-9ef3-492d593bd1e5",
+      uuid: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["min", 100],
                 ["max", 10],
                 ["reverse", 0x01]]})
 
+Homes.create_appliance_command(appliance,
+      %{name: "power",
+      command_type: "read",
+      protocol: "bluetooth",
+      uuid: "80c37f00-cc16-11e4-8830-0800200c9a66",
+      command: [["charat", 3],
+                ["int", 10],
+                ["eq", 1],
+                ["ifelse", "on", "off"]]})
 
+Homes.create_appliance_command(appliance,
+      %{name: "volume",
+      command_type: "read",
+      protocol: "bluetooth",
+      uuid: "80c37f00-cc16-11e4-8830-0800200c9a66",
+      command: [["substr", 0, 2],
+                ["int", 16]]})
+
+
+
+#80C37F00-CC16-11E4-8830-0800200C9A66
 # for iex:
 
 # alias Argus.Homes
