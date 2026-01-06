@@ -9,66 +9,105 @@ defmodule Argus.DeviceCommunication.DeviceWorker do
   defp via(id), do: {:via, Registry, {Argus.DeviceRegistry, id}}
 
   def init(appliance) do
-    port = Port.open({:spawn, "python3 assets/scripts/device_daemon.py"}, [
+    port = Port.open({:spawn, "python3 assets/scripts/test_daemon.py"}, [
       :binary,
       :exit_status,
       {:line, 4096}
     ])
 
+    IO.puts("HEY HEY HEY OVER HERE")
+    IO.inspect(appliance)
+
     init_payload =
       appliance
       |> CommandPipeline.device_command_payload("handshake", "lifecycle") #TODO: what if this doesn't exist
-      |> Map.put("read", "80C37F00-CC16-11E4-8830-0800200C9A66") #TODO: this needs to be retrieved from database
+      |> Map.put("read", "80c37f00-cc16-11e4-8830-0800200c9a66") #TODO: this needs to be retrieved from database not hardcoded
       |> Jason.encode!()
       |> then(&(&1 <> "\n"))
     Port.command(port, init_payload)
 
     Phoenix.PubSub.subscribe(Argus.PubSub, "appliance:#{appliance.mac_address}")
 
-    {:ok, %{appliance: appliance, port: port}}
+    {:ok, %{appliance: appliance, port: port, connection: "connected"}}
   end
 
-  def handle_cast({:send_command, command}, %{port: port} = state) do
+  def handle_info({:send_command, _command}, %{connection: "disconnected"} = state) do
+    Phoenix.PubSub.broadcast_from(
+      Argus.PubSub,
+      self(),
+      "appliance:#{state.appliance.mac_address}",
+      {:error, "Device is not connected"}
+    )
+    {:noreply, state}
+  end
+
+  def handle_info({:send_command, command}, %{port: port} = state) do
+    IO.puts("DEVICE WORKER SENDING TO APPLIANCE")
     payload = Jason.encode!(command) <> "\n"
     Port.command(port, payload)
     {:noreply, state}
   end
 
-  def handle_info({:send_command, command}, state) do
-    handle_cast({:send_command, command}, state)
+  def handle_info({_, {:data, {:eol, line}}}, state) do
+    line
+    |> Jason.decode!()
+    |> handle_daemon_info(state)
   end
 
-  def handle_info({_, {:data, {:eol, line}}}, %{appliance: appliance} = state) do
-    case Jason.decode(line) do
-      # 1. State update from device
-      {:ok, %{"state_update" => update_map, "mac_address" => mac_address}} when is_map(update_map) ->
-        Phoenix.PubSub.broadcast(
-          Argus.PubSub,
-          "appliance:#{appliance.mac_address}",
-          {:state_update, mac_address, update_map}
-        )
-        {:noreply, state}
-
-      # 2. Connection status
-      {:ok, %{"status" => _status, "mac_address" => _mac}} ->
-        {:noreply, state}
-
-      # 3. Error report from Python
-      {:ok, %{"error" => _message, "mac_address" => _mac}} ->
-        {:noreply, state}
-
-      # Catch-all for anything else
-      {:ok, _other} ->
-        {:noreply, state}
-
-      # Malformed JSON
-      {:error, _err} ->
-        {:noreply, state}
-    end
+  def handle_info({_, {:exit_status, _}}, %{appliance: appliance} = state) do
+    IO.puts("DAEMON HAS SHUT DOWN")
+    Phoenix.PubSub.broadcast_from(
+      Argus.PubSub,
+      self(),
+      "appliance:#{appliance.mac_address}",
+      {:connection, "disconnected"}
+    )
+    {:noreply, %{state | connection: "disconnected"}}
   end
 
-  def handle_info({:state_update, _mac, %{} = _state_data}, state) do
-    # Swallow self-broadcasts or handle them if needed
+  def handle_info(message, state) do
+    IO.puts("DEVICE WORKER RECEIVED UNEXPECTED MESSAGE")
+    IO.inspect(message)
+    {:noreply, state}
+  end
+
+  def handle_daemon_info(%{"state_update" => %{} = state_update}, %{appliance: appliance} = state) do
+    IO.puts("DEVICE WORKER RECEIVED STATE UPDATE, SENDING TO TOPIC appliance:#{appliance.mac_address}")
+    IO.inspect({node(), self()}, label: "NODE/PID")
+    IO.inspect(:erlang.nodes(), label: "CONNECTED NODES")
+    IO.inspect(Process.whereis(Argus.PubSub), label: "Argus.PubSub PID")
+    Phoenix.PubSub.broadcast_from(
+      Argus.PubSub,
+      self(),
+      "appliance:#{appliance.mac_address}",
+      {:state_update, state_update}
+    )
+    {:noreply, state}
+  end
+
+  def handle_daemon_info(%{"connection" => connection}, %{appliance: appliance} = state) do
+    Phoenix.PubSub.broadcast_from(
+      Argus.PubSub,
+      self(),
+      "appliance:#{appliance.mac_address}",
+      {:connection, connection}
+    )
+    {:noreply, %{state | connection: connection}}
+  end
+
+  def handle_daemon_info(%{"error" => error_msg}, %{appliance: appliance} = state) do
+    Phoenix.PubSub.broadcast_from(
+      Argus.PubSub,
+      self(),
+      "appliance:#{appliance.mac_address}",
+      {:error, error_msg}
+    )
+    {:noreply, state}
+  end
+
+  def handle_daemon_info(message, state) do
+    IO.puts("UNEXPECTED DAEMON MESSAGE")
+    IO.inspect(message)
     {:noreply, state}
   end
 end

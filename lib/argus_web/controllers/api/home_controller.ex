@@ -160,7 +160,7 @@ defmodule ArgusWeb.Api.HomeController do
                       name: command.name,
                       protocol: command.protocol,
                       appliance_id: command.appliance_id,
-                      channel: command.channel,
+                      uuid: command.uuid,
                       command: command.command
                     }
                   end)
@@ -199,7 +199,7 @@ defmodule ArgusWeb.Api.HomeController do
   #                     name: command.name,
   #                     protocol: command.protocol,
   #                     appliance_id: command.appliance_id,
-  #                     channel: command.channel,
+  #                     uuid: command.uuid,
   #                     command: command.command
   #                   })
   #               end

@@ -1,28 +1,59 @@
 defmodule ArgusWeb.ApplianceLive do
   use Phoenix.LiveComponent
 
+  alias Argus.Homes
   alias Argus.DeviceCommunication.CommandPipeline
 
-  def update(assigns, socket) do
+  def update(%{appliance: appliance} = assigns, socket) do
+    read_cmds = Homes.list_commands_of_type_in_appliance(appliance, "read")
+
     socket =
       socket
       |> assign(assigns)
-      |> assign_new(:volume, fn -> 50 end)
-      |> assign_new(:power, fn -> nil end)
+      |> assign_new(:_read_index, fn ->
+        # index by name and also keep by-uuid for quick filtering
+        %{
+          by_name: Map.new(read_cmds, &{&1.name, &1}),
+          by_uuid: Enum.group_by(read_cmds, & &1.uuid)
+        }
+      end)
+      |> then(fn socket ->
+        Enum.reduce(read_cmds, socket, fn cmd, s2 ->
+          assign_new(s2, String.to_atom(cmd.name), fn -> nil end)
+        end)
+      end)
 
     {:ok, socket}
   end
 
+  def update(%{state_update: %{"uuid" => uuid, "data" => data}}, socket) do
+    read_cmds =
+    case socket.assigns[:_read_index] do
+      %{by_uuid: by_uuid} -> Map.get(by_uuid, uuid, [])
+      _ -> Homes.list_reads_for_uuid(socket.assigns.appliance, uuid)
+    end
+
+    socket =
+      Enum.reduce(read_cmds, socket, fn cmd, s ->
+        val = CommandPipeline.interpret_read(data, cmd.command)
+        assign(s, String.to_atom(cmd.name), val)
+      end)
+
+    {:ok, socket}
+  end
+
+  def update(assigns, socket), do: {:ok, assign(socket, assigns)}
+
   def handle_event("toggle_power", _params, socket) do
     current = socket.assigns.power
     next = if current == "on", do: "off", else: "on"
-    CommandPipeline.send_command(socket.assigns.appliance, next, "write")
+    CommandPipeline.write_to_device(socket.assigns.appliance, next, "write")
     {:noreply, assign(socket, :power, next)}
   end
 
   def handle_event("set_volume", %{"value" => value}, socket) do
     int_val = String.to_integer(value)
-    CommandPipeline.send_command(socket.assigns.appliance, "volume", "write", int_val)
+    CommandPipeline.write_to_device(socket.assigns.appliance, "volume", "write", int_val)
     {:noreply, assign(socket, :volume, int_val)}
   end
 
@@ -60,7 +91,7 @@ defmodule ArgusWeb.ApplianceLive do
             id="#{@appliance.slug}-volume-up"
             class="volume-button plus"
             phx-click="set_volume"
-            phx-value-value={min(@volume + 5, 100)}
+            phx-value-value={if @volume, do: min(@volume + 5, 100), else: nil}
             phx-target={@myself}
             phx-hook="RepeatClick"
           >
@@ -74,7 +105,7 @@ defmodule ArgusWeb.ApplianceLive do
             id="#{@appliance.slug}-volume-down"
             class="volume-button minus"
             phx-click="set_volume"
-            phx-value-value={max(@volume - 5, 0)}
+            phx-value-value={if @volume, do: min(@volume - 5, 0), else: nil}
             phx-target={@myself}
             phx-hook="RepeatClick"
           >
