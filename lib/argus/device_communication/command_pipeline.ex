@@ -23,7 +23,7 @@ defmodule Argus.DeviceCommunication.CommandPipeline do
     }
   end
 
-  def interpret_read({:state_update, %{"data" => data}}, command) do
+  def interpret_read(%{state_update: %{"data" => data}}, command) do
     command
     |> Jason.decode!()
     |> rf_command(data)
