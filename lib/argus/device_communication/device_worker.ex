@@ -9,14 +9,11 @@ defmodule Argus.DeviceCommunication.DeviceWorker do
   defp via(id), do: {:via, Registry, {Argus.DeviceRegistry, id}}
 
   def init(appliance) do
-    port = Port.open({:spawn, "python3 assets/scripts/test_daemon.py"}, [
+    port = Port.open({:spawn, "python assets/scripts/test_daemon.py"}, [ #CHANGEME: usually "python3" for mac and "python" for windows
       :binary,
       :exit_status,
       {:line, 4096}
     ])
-
-    IO.puts("HEY HEY HEY OVER HERE")
-    IO.inspect(appliance)
 
     init_payload =
       appliance
@@ -27,6 +24,7 @@ defmodule Argus.DeviceCommunication.DeviceWorker do
     Port.command(port, init_payload)
 
     Phoenix.PubSub.subscribe(Argus.PubSub, "appliance:#{appliance.mac_address}")
+    Phoenix.PubSub.subscribe(Argus.PubSub, "appliance-sync:#{appliance.mac_address}")
 
     {:ok, %{appliance: appliance, port: port, connection: "connected"}}
   end
@@ -43,6 +41,7 @@ defmodule Argus.DeviceCommunication.DeviceWorker do
 
   def handle_info({:send_command, command}, %{port: port} = state) do
     IO.puts("DEVICE WORKER SENDING TO APPLIANCE")
+    IO.inspect(command)
     payload = Jason.encode!(command) <> "\n"
     Port.command(port, payload)
     {:noreply, state}
@@ -71,11 +70,19 @@ defmodule Argus.DeviceCommunication.DeviceWorker do
     {:noreply, state}
   end
 
+  def handle_daemon_info(%{"synchronous_state_update" => %{} = state_update}, %{appliance: appliance} = state) do
+    IO.puts("DEVICE WORKER RECEIVED SYNCHRONOUS STATE UPDATE, SENDING TO TOPIC appliance-sync:#{appliance.mac_address}")
+    Phoenix.PubSub.broadcast_from(
+      Argus.PubSub,
+      self(),
+      "appliance-sync:#{appliance.mac_address}",
+      {:state_update, state_update}
+    )
+    {:noreply, state}
+  end
+
   def handle_daemon_info(%{"state_update" => %{} = state_update}, %{appliance: appliance} = state) do
     IO.puts("DEVICE WORKER RECEIVED STATE UPDATE, SENDING TO TOPIC appliance:#{appliance.mac_address}")
-    IO.inspect({node(), self()}, label: "NODE/PID")
-    IO.inspect(:erlang.nodes(), label: "CONNECTED NODES")
-    IO.inspect(Process.whereis(Argus.PubSub), label: "Argus.PubSub PID")
     Phoenix.PubSub.broadcast_from(
       Argus.PubSub,
       self(),

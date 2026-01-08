@@ -2,6 +2,7 @@ defmodule ArgusWeb.SpaceLive do
   use ArgusWeb, :live_view
   import ArgusWeb.UIComponents
   alias Argus.Homes
+  alias Argus.DeviceCommunication.CommandPipeline
   def mount(%{"home_slug" => home_slug, "space_slug" => space_slug}, _session, socket) do
     space =
       Homes.get_home_by_slug(home_slug)
@@ -18,7 +19,7 @@ defmodule ArgusWeb.SpaceLive do
         Phoenix.PubSub.subscribe(Argus.PubSub, "appliance:#{appliance.mac_address}")
 
         Enum.each(Homes.list_commands_of_type_in_appliance(appliance, "read"), fn command ->
-          Argus.DeviceCommunication.CommandPipeline.read_from_device(appliance, command.name)
+          CommandPipeline.read_payload(appliance, command.name) |> CommandPipeline.send_command_to_device()
         end) #TODO: fix all of this liveview logic
       end)
     end

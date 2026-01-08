@@ -3,17 +3,25 @@ import json
 import asyncio
 from bleak import BleakClient
 
-def ParseAndSendStateUpdate(mac, sender, data: bytearray):
+def ParseAndSendStateUpdate(mac, sender, data: bytearray, synchronous=False):
     if not isinstance(sender, str):
         sender = sender.uuid
 
-    json_state = {
-        "state_update": {
+    state_update = {
             "mac_address": mac,
             "uuid": sender,
-            "data": data.hex(),
+            "data": data.hex()
         }
-    }
+
+    if synchronous:
+        json_state = {
+            "synchronous_state_update": state_update
+        }
+    else:
+        json_state = {
+            "state_update": state_update
+        }
+
     print(json.dumps(json_state), flush=True)
 
 def notificationHandler(mac):
@@ -46,6 +54,7 @@ async def connectAndListen(mac_address, uuid, handshake, read):
                     command = data.get("command")
                     uuid = data.get("uuid")
                     handshake = data.get("handshake")
+                    synchronous = data.get("synchronous", False)
 
                     if handshake:
                         await client.write_gatt_char(uuid, bytearray(handshake), response=True)
@@ -53,7 +62,7 @@ async def connectAndListen(mac_address, uuid, handshake, read):
 
                     if command == "read":
                         state = await client.read_gatt_char(uuid)
-                        ParseAndSendStateUpdate(mac_address, uuid, state)
+                        ParseAndSendStateUpdate(mac_address, uuid, state, synchronous)
                         continue
 
                     # Write command

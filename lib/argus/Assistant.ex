@@ -29,12 +29,18 @@ defmodule Argus.Assistant do
         command_name = command_json["command"].name
         command_type = if intent == :action, do: "write", else: "read"
 
+        case intent do
+          :action ->
+            CommandPipeline.write_payload(appliance, command_name, command_type) |> CommandPipeline.send_command_to_device()
+        end
 
-        send_command =
-          case intent do
-            :action -> Task.async(fn -> CommandPipeline.write_to_device(appliance, command_name, command_type) end)
-            :information -> Task.async(fn -> CommandPipeline.read_from_device(appliance, command_name) end)
-          end
+        send_command = Task.async(fn ->
+                                    CommandPipeline.read_payload(appliance, command_name)
+                                    |> CommandPipeline.send_command_to_device_synchronously()
+                                    |> CommandPipeline.interpret_read(
+                                        Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, "read").command
+                                    )
+                                  end)
 
         delay_message = Task.async(
           fn ->
