@@ -8,10 +8,10 @@ def ParseAndSendStateUpdate(mac, sender, data: bytearray, synchronous=False):
         sender = sender.uuid
 
     state_update = {
-            "mac_address": mac,
-            "uuid": sender,
-            "data": data.hex()
-        }
+        "mac_address": mac,
+        "uuid": sender,
+        "data": data.hex()
+    }
 
     if synchronous:
         json_state = {
