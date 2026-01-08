@@ -1,6 +1,6 @@
 defmodule Argus.DeviceCommunication.CommandPipeline do
 
-  def write_to_device(appliance, command_name, command_type, user_input \\ nil) do
+  def write_payload(appliance, command_name, command_type, user_input \\ nil) do
     cmd = Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, command_type)
 
     %{
@@ -11,10 +11,9 @@ defmodule Argus.DeviceCommunication.CommandPipeline do
         |> Jason.decode!()
         |> rf_command(user_input)
     }
-    |> send_command_to_device()
   end
 
-  def read_from_device(appliance, command_name) do
+  def read_payload(appliance, command_name) do
     cmd = Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, "read")
 
     %{
@@ -22,24 +21,19 @@ defmodule Argus.DeviceCommunication.CommandPipeline do
       uuid: cmd.uuid,
       command: "read"
     }
-    |> send_command_to_device()
-    |> case do
-      {:state_update, %{"data" => data}} -> interpret_read(data, cmd.command)
-      other -> other
-    end
   end
 
-  def interpret_read(data, command) do
+  def interpret_read(%{state_update: %{"data" => data}}, command) do
     command
     |> Jason.decode!()
     |> rf_command(data)
   end
 
-  # alias Argus.Homes
-  # appliance = Homes.get_home_by_slug("main-apartment") |> Homes.get_space_by_slug("bedroom") |> Homes.get_appliance_by_slug("noise-maker")
-  # Argus.DeviceCommunication.CommandPipeline.read(appliance, "power")
+  def interpret_read(response, _command), do: response
 
-  defp send_command_to_device(payload) do
+  def send_command_to_device(payload) do
+    IO.puts("SEND COMMAND CALLED")
+    IO.inspect(payload)
     topic = "appliance:#{payload.mac_address}"
     #:ok = Phoenix.PubSub.subscribe(Argus.PubSub, topic)
 
@@ -49,16 +43,31 @@ defmodule Argus.DeviceCommunication.CommandPipeline do
       topic,
       {:send_command, payload}
     )
+  end
 
-    # response =
-    #   receive do
-    #     msg -> msg
-    #   after
-    #     5000 -> :timeout
-    #   end
+  def send_command_to_device_synchronously(payload) do
+    IO.puts("SEND COMMAND SYNCHRONOUSLY CALLED")
+    IO.inspect(payload)
+    topic = "appliance-sync:#{payload.mac_address}"
+    :ok = Phoenix.PubSub.subscribe(Argus.PubSub, topic)
 
-    #Phoenix.PubSub.unsubscribe(Argus.PubSub, topic)
-    #:ok
+    :ok = Phoenix.PubSub.broadcast_from(
+      Argus.PubSub,
+      self(),
+      topic,
+      {:send_command, payload
+                      |> Map.put(:synchronous, true)}
+    )
+
+    response =
+      receive do
+        msg -> msg
+      after
+        5000 -> :timeout
+      end
+
+    Phoenix.PubSub.unsubscribe(Argus.PubSub, topic)
+    response
   end
 
   def device_command_payload(appliance, command_name, command_type, user_input \\ nil) do #TODO: get rid of this and replace it in device worker

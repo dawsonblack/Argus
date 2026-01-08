@@ -26,7 +26,7 @@ defmodule ArgusWeb.ApplianceLive do
     {:ok, socket}
   end
 
-  def update(%{state_update: %{"uuid" => uuid, "data" => data}}, socket) do
+  def update(response = %{state_update: %{"uuid" => uuid}}, socket) do
     read_cmds =
     case socket.assigns[:_read_index] do
       %{by_uuid: by_uuid} -> Map.get(by_uuid, uuid, [])
@@ -35,7 +35,7 @@ defmodule ArgusWeb.ApplianceLive do
 
     socket =
       Enum.reduce(read_cmds, socket, fn cmd, s ->
-        val = CommandPipeline.interpret_read(data, cmd.command)
+        val = CommandPipeline.interpret_read(response, cmd.command)
         assign(s, String.to_atom(cmd.name), val)
       end)
 
@@ -47,13 +47,13 @@ defmodule ArgusWeb.ApplianceLive do
   def handle_event("toggle_power", _params, socket) do
     current = socket.assigns.power
     next = if current == "on", do: "off", else: "on"
-    CommandPipeline.write_to_device(socket.assigns.appliance, next, "write")
+    CommandPipeline.write_payload(socket.assigns.appliance, next, "write") |> CommandPipeline.send_command_to_device()
     {:noreply, assign(socket, :power, next)}
   end
 
   def handle_event("set_volume", %{"value" => value}, socket) do
     int_val = String.to_integer(value)
-    CommandPipeline.write_to_device(socket.assigns.appliance, "volume", "write", int_val)
+    CommandPipeline.write_payload(socket.assigns.appliance, "volume", "write", int_val) |> CommandPipeline.send_command_to_device()
     {:noreply, assign(socket, :volume, int_val)}
   end
 
