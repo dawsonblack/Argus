@@ -19,7 +19,8 @@ config :argus, Argus.Repo,
 config :argus, ArgusWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {100, 120, 42, 68}, port: 4000],
+  #CHANNGEME this will vary based on what machine you're running this on
+  http: [ip: {100, 97, 61, 58}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
