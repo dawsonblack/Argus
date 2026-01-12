@@ -4,7 +4,7 @@ import uvicorn
 
 # Load your trained model directly (can be a .tar.gz or folder)
 intent_model = Agent.load("intent/models/intent_parser.tar.gz")
-write_command_model = Agent.load("write_commands/models/write_commands.tar.gz")
+#write_command_model = Agent.load("write_commands/models/write_commands.tar.gz")
 
 app = FastAPI()
 
@@ -16,7 +16,8 @@ async def predict(request: Request):
     if model == 'intent':
         prediction = await intent_model.parse_message(prompt)
     elif model == 'write_command':
-        prediction = await write_command_model.parse_message(prompt)
+        raise HTTPException(status_code=501, detail="I can't determine write command intents yet")
+        #prediction = await write_command_model.parse_message(prompt)
     elif model == 'read_command':
         raise HTTPException(status_code=501, detail="I can't determine read command intents yet")
     else:

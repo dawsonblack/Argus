@@ -9,7 +9,7 @@ defmodule Argus.DeviceCommunication.DeviceWorker do
   defp via(id), do: {:via, Registry, {Argus.DeviceRegistry, id}}
 
   def init(appliance) do
-    port = Port.open({:spawn, "python assets/scripts/test_daemon.py"}, [ #CHANGEME: usually "python3" for mac and "python" for windows
+    port = Port.open({:spawn, "python3 assets/scripts/test_daemon.py"}, [ #CHANGEME: usually "python3" for mac and "python" for windows
       :binary,
       :exit_status,
       {:line, 4096}

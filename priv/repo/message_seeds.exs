@@ -13,7 +13,7 @@ alias Argus.Chat
 alias Argus.Repo
 
 #CHANGEME ---------!!!!!THE LINE BELOW WILL DELETE ALL OF YOUR CHAT HISTORY, BE CAREFUL WITH IT!!!!!---------
-#Repo.query!("TRUNCATE TABLE messages RESTART IDENTITY CASCADE")
+Repo.query!("TRUNCATE TABLE messages RESTART IDENTITY CASCADE")
 
 
 Chat.create_message(%{

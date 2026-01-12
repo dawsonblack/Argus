@@ -25,7 +25,9 @@ defmodule Argus.Assistant.LLM do
 
     headers = [{"Content-Type", "application/json"}]
 
-    case HTTPoison.post("http://localhost:#{port}/api/chat", Jason.encode!(payload), headers) do
+    #TODO delete these opts, they are a bandaid for timeout errors
+    opts = [timeout: 30_000, recv_timeout: 180_000]
+    case HTTPoison.post("http://localhost:#{port}/api/chat", Jason.encode!(payload), headers, opts) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         with {:ok, decoded} <- Jason.decode(body),
              content when is_binary(content) <- get_in(decoded, ["message", "content"]) do

@@ -8,11 +8,12 @@ defmodule Argus.Assistant.CommandParsing do
     port = Application.get_env(:argus, :rasa_port)
 
     payload = %{
-      "text" => message
+      "prompt" => message,
+      "model" => "intent"
     }
     headers = [{"Content-Type", "application/json"}]
 
-    case HTTPoison.post("http://localhost:#{port}/model/parse", Jason.encode!(payload), headers) do
+    case HTTPoison.post("http://localhost:#{port}/predict", Jason.encode!(payload), headers) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         with {:ok, decoded} <- Jason.decode(body), content when is_binary(content) <- get_in(decoded, ["intent", "name"]) do
           content
