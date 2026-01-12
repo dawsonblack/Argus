@@ -32,8 +32,6 @@ defmodule Argus.DeviceCommunication.CommandPipeline do
   def interpret_read(response, _command), do: response
 
   def send_command_to_device(payload) do
-    IO.puts("SEND COMMAND CALLED")
-    IO.inspect(payload)
     topic = "appliance:#{payload.mac_address}"
     #:ok = Phoenix.PubSub.subscribe(Argus.PubSub, topic)
 
@@ -47,7 +45,6 @@ defmodule Argus.DeviceCommunication.CommandPipeline do
 
   def send_command_to_device_synchronously(payload) do
     IO.puts("SEND COMMAND SYNCHRONOUSLY CALLED")
-    IO.inspect(payload)
     topic = "appliance-sync:#{payload.mac_address}"
     :ok = Phoenix.PubSub.subscribe(Argus.PubSub, topic)
 

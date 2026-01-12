@@ -8,7 +8,6 @@ defmodule ArgusWeb.Api.HomeController do
 
   def show_homes(conn, _params) do
     homes = Homes.list_homes()
-    IO.inspect(homes)
     json(conn, %{
       homes: Enum.map(homes, fn home ->
         %{

@@ -40,8 +40,7 @@ defmodule Argus.DeviceCommunication.DeviceWorker do
   end
 
   def handle_info({:send_command, command}, %{port: port} = state) do
-    IO.puts("DEVICE WORKER SENDING TO APPLIANCE")
-    IO.inspect(command)
+    IO.puts("DEVICE WORKER SENDING COMMAND TO APPLIANCE")
     payload = Jason.encode!(command) <> "\n"
     Port.command(port, payload)
     {:noreply, state}

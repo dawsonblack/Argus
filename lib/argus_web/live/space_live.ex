@@ -10,10 +10,6 @@ defmodule ArgusWeb.SpaceLive do
       |> Argus.Repo.preload(appliances: :appliance_commands)
 
     if connected?(socket) do
-      IO.inspect({node(), self()}, label: "NODE/PID")
-      IO.inspect(:erlang.nodes(), label: "CONNECTED NODES")
-      IO.inspect(Process.whereis(Argus.PubSub), label: "Argus.PubSub PID")
-
       Enum.each(space.appliances, fn appliance ->
         IO.puts("Subscribing to appliance:#{appliance.mac_address}")
         Phoenix.PubSub.subscribe(Argus.PubSub, "appliance:#{appliance.mac_address}")
@@ -51,9 +47,7 @@ defmodule ArgusWeb.SpaceLive do
   end
 
   def handle_info({:state_update, %{"mac_address" => mac} = state}, socket) do
-    IO.puts("MADE IT")
     slug = find_appliance_slug(socket.assigns.space.appliances, mac)
-    IO.inspect({mac, slug}, label: "state_update routing mac->slug")
     send_update(ArgusWeb.ApplianceLive,
     id: slug,
     state_update: state)
