@@ -60,11 +60,13 @@ defmodule Argus.Assistant do
         end
 
         case send_command_result do
-          {:state_update, _, _} ->
+          {:state_update, _} ->
             "Request completed"
           :timeout ->
             "Request timed out"
-          _ ->
+          other ->
+            IO.puts("GOT AN ERROR WITH READ COMMAND IN ASSISTANT")
+            IO.inspect(other)
             "An error occured. Please try again."
         end
 

@@ -63,7 +63,17 @@ Homes.create_appliance_command(appliance,
                 ["reverse", 0x01]]})
 
 Homes.create_appliance_command(appliance,
-      %{name: "power",
+      %{name: "on",
+      command_type: "read",
+      protocol: "bluetooth",
+      uuid: "80c37f00-cc16-11e4-8830-0800200c9a66",
+      command: [["charat", 3],
+                ["int", 10],
+                ["eq", 1],
+                ["ifelse", "on", "off"]]})
+
+Homes.create_appliance_command(appliance,
+      %{name: "off",
       command_type: "read",
       protocol: "bluetooth",
       uuid: "80c37f00-cc16-11e4-8830-0800200c9a66",
@@ -100,5 +110,7 @@ Homes.create_appliance_command(appliance,
 # MIX_ENV=test mix ecto.drop
 # MIX_ENV=test mix ecto.create
 # MIX_ENV=test mix ecto.migrate
+
+# to log into database do: psql -U postgres -d argus_dev
 
 # If you remake the database you need to comment out device supervisor in application.ex, otherwise seeds will crash
