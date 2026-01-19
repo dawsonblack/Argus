@@ -33,7 +33,7 @@ defmodule ArgusWeb.ChatLive do
   end
 
   def handle_info({:user_message, _message}, socket) do
-    {:noreply, socket}
+    {:noreply, assign(socket, messages: Chat.list_messages(), typing: false)}
   end
 
   def handle_info({:assistant_status, :typing}, socket) do
