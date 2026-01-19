@@ -3,22 +3,30 @@ import json
 import asyncio
 from bleak import BleakClient
 
-def ParseAndSendStateUpdate(mac, data: bytearray):
-    data = data.hex()
-    volume = int(data[0:2], 16)
-    is_on = data[3] == "1"
-    json_state = {
-        "state_update": {
-            "volume": volume,
-            "power": "on" if is_on else "off"
-        },
-        "mac_address": mac
+def ParseAndSendStateUpdate(mac, sender, data: bytearray, synchronous=False):
+    if not isinstance(sender, str):
+        sender = sender.uuid
+
+    state_update = {
+        "mac_address": mac,
+        "uuid": sender,
+        "data": data.hex()
     }
+
+    if synchronous:
+        json_state = {
+            "synchronous_state_update": state_update
+        }
+    else:
+        json_state = {
+            "state_update": state_update
+        }
+
     print(json.dumps(json_state), flush=True)
 
 def notificationHandler(mac):
-    def handleNotification(_, data):
-        ParseAndSendStateUpdate(mac, data)
+    def handleNotification(sender, data):
+        ParseAndSendStateUpdate(mac, sender, data)
     return handleNotification
 
 
@@ -26,13 +34,15 @@ async def connectAndListen(mac_address, uuid, handshake, read):
     try:
         async with BleakClient(mac_address) as client:
             if not client.is_connected:
-                print(json.dumps({"error": "Connection failed", "mac_address": mac_address}), flush=True)
                 return
+            
+            print(json.dumps({"connection": "connected", "mac_address": mac_address}), flush=True)
 
             if handshake and uuid:
                 await client.write_gatt_char(uuid, bytearray(handshake), response=True)
 
-            await client.start_notify(read, notificationHandler(mac_address))
+            for read_uuid in read:
+                await client.start_notify(read_uuid, notificationHandler(mac_address))
 
             while True:
                 line = await asyncio.get_event_loop().run_in_executor(None, sys.stdin.readline)
@@ -43,17 +53,18 @@ async def connectAndListen(mac_address, uuid, handshake, read):
                         continue
 
                     command = data.get("command")
-                    if command == "read":
-                        state = await client.read_gatt_char(read)
-                        ParseAndSendStateUpdate(mac_address, state)
-                        continue
-
                     uuid = data.get("uuid")
                     handshake = data.get("handshake")
+                    synchronous = data.get("synchronous", False)
 
                     if handshake:
                         await client.write_gatt_char(uuid, bytearray(handshake), response=True)
                         await asyncio.sleep(0.1)  # brief delay if needed
+
+                    if command == "read":
+                        state = await client.read_gatt_char(uuid)
+                        ParseAndSendStateUpdate(mac_address, uuid, state, synchronous)
+                        continue
 
                     # Write command
                     await client.write_gatt_char(uuid, bytearray(command), response=True)
@@ -82,3 +93,5 @@ def main():
     asyncio.run(connectAndListen(mac_address, uuid, handshake, read))
 
 main()
+
+#{"command":[6,224,226,230,109,168,200,255,255],"mac_address":"BA38DF23-BA87-3204-BF7C-F63DCFDBBB1F","uuid":"90759319-1668-44da-9ef3-492d593bd1e5","read":"80C37F00-CC16-11E4-8830-0800200C9A66"}

@@ -68,16 +68,25 @@ defmodule Argus.DeviceCommunication.CommandPipeline do
   end
 
   def device_command_payload(appliance, command_name, command_type, user_input \\ nil) do #TODO: get rid of this and replace it in device worker
-    cmd = Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, command_type)
-    rf_command =
-      cmd.command
-      |> Jason.decode!()
-      |> rf_command(user_input)
-    %{
-      mac_address: appliance.mac_address,
-      uuid: cmd.uuid,
-      command: rf_command
-    }
+    case Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, command_type) do
+      nil ->
+        %{
+          mac_address: appliance.mac_address,
+          uuid: nil,
+          command: nil
+        }
+
+      cmd ->
+        rf_command =
+          cmd.command
+          |> Jason.decode!()
+          |> rf_command(user_input)
+        %{
+          mac_address: appliance.mac_address,
+          uuid: cmd.uuid,
+          command: rf_command
+        }
+    end
   end
 
   #TODO: rename this to also describe when the command column is interpreting a read repsonse

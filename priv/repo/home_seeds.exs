@@ -83,6 +83,16 @@ Homes.create_appliance_command(appliance,
                 ["ifelse", "on", "off"]]})
 
 Homes.create_appliance_command(appliance,
+      %{name: "power",
+      command_type: "read",
+      protocol: "bluetooth",
+      uuid: "80c37f00-cc16-11e4-8830-0800200c9a66",
+      command: [["charat", 3],
+                ["int", 10],
+                ["eq", 1],
+                ["ifelse", "on", "off"]]})
+
+Homes.create_appliance_command(appliance,
       %{name: "volume",
       command_type: "read",
       protocol: "bluetooth",

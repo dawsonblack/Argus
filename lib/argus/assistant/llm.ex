@@ -69,15 +69,15 @@ defmodule Argus.Assistant.LLM do
 
       rag_prompt <>
         "Examples of correct output:\n" <>
-        "{\"room\":\"bedroom\",\"device\":\"fan\",\"command\":\"speed\",\"params\":[31]}\n" <>
-        "{\"room\":\"office\",\"device\":\"lamp\",\"command\":\"brightness\",\"params\":[\"-10\"]}\n" <>
-        "{\"room\":\"bedroom\",\"device\":\"light\",\"command\":\"on\",\"params\":[]}\n" <>
-        "{\"room\":null,\"device\":\"noise_maker\",\"command\":\"volume\",\"params\":[50]}\n\n" <>
+        "{\"room\":\"bedroom\",\"device\":\"fan\",\"command\":\"speed\",\"params\":31}\n" <>
+        "{\"room\":\"office\",\"device\":\"lamp\",\"command\":\"brightness\",\"params\":\"-10\"}\n" <>
+        "{\"room\":\"bedroom\",\"device\":\"light\",\"command\":\"on\",\"params\":null}\n" <>
+        "{\"room\":null,\"device\":\"noise_maker\",\"command\":\"volume\",\"params\":50}\n\n" <>
 
         "Never do this (invalid):\n" <>
         "- {\"room\":\"bedroom\"} Here's the JSON you asked for...\n" <>
         "- ```json {...} ```\n" <>
-        "- {\"room\":\"bedroom\",\"device\":\"noise_maker\",\"command\":\"volume\",\"params\":[,]}"
+        "- {\"room\":\"bedroom\",\"device\":\"noise_maker\",\"command\":\"volume\",\"params\":on\"}"
     #rag_prompt
   end
 
@@ -89,10 +89,10 @@ defmodule Argus.Assistant.LLM do
       "\"room\": string|null,          // e.g., \"bedroom\"\n" <>
       "\"device\": string|null,        // e.g., \"light\"\n" <>
       "\"command\": string|null,       // e.g., \"on\"\n" <>
-      "\"params\": array|null          // [] if none; numbers are numeric; relative change as strings \"+N\" or \"-N\"\n}\n" <>
+      "\"params\": string|int|null     // e.g., 4 or \"+4\"; relative change as strings \"+N\" or \"-N\"\n}\n" <>
       "Rules:\n- Use ONLY devices/rooms/commands mentioned in the facts.\n" <>
       "- If any field is missing or ambiguous, set it to null instead of guessing.\n" <>
-      "- If user requests a relative change, encode as \"+N\" or \"-N\" (strings). Absolute values are numbers.\n" <>
+      "- If user requests a relative change (like turning brightness up 3), encode as \"+N\" or \"-N\" (strings). Absolute values are numbers.\n" <>
       "- Do not add fields. Do not include comments. Do not wrap in code fences.\n" <>
       "- Output must be a single JSON object and must parse with a strict JSON parser."
 

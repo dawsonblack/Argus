@@ -27,6 +27,7 @@ async def predict(request: Request):
 uvicorn.run(app, host="0.0.0.0", port=5050)
 
 
+# source venv/bin/activate
 
 # rasa run --enable-api --model models/intent_parser.tar.gz --port 5050
 #rasa train nlu --config config.yml --nlu data/nlu.yml --out models --fixed-model-name intent_model2

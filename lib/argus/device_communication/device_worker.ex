@@ -1,6 +1,7 @@
 defmodule Argus.DeviceCommunication.DeviceWorker do
   use GenServer
   alias Argus.DeviceCommunication.CommandPipeline
+  alias Argus.Homes
 
   def start_link(appliance) do
     GenServer.start_link(__MODULE__, appliance, name: via(appliance.id))
@@ -9,7 +10,7 @@ defmodule Argus.DeviceCommunication.DeviceWorker do
   defp via(id), do: {:via, Registry, {Argus.DeviceRegistry, id}}
 
   def init(appliance) do
-    port = Port.open({:spawn, "python3 assets/scripts/test_daemon.py"}, [ #CHANGEME: usually "python3" for mac and "python" for windows
+    port = Port.open({:spawn, "python3 assets/scripts/device_daemon.py"}, [ #CHANGEME: usually "python3" for mac and "python" for windows
       :binary,
       :exit_status,
       {:line, 4096}
@@ -17,10 +18,14 @@ defmodule Argus.DeviceCommunication.DeviceWorker do
 
     init_payload =
       appliance
-      |> CommandPipeline.device_command_payload("handshake", "lifecycle") #TODO: what if this doesn't exist
-      |> Map.put("read", "80c37f00-cc16-11e4-8830-0800200c9a66") #TODO: this needs to be retrieved from database not hardcoded
+      |> CommandPipeline.device_command_payload("handshake", "lifecycle")
+      |> Map.put("read", Homes.list_commands_of_type_in_appliance(appliance, "read")
+                          |> Enum.map(& &1.uuid)
+                          |> Enum.uniq()
+                )
       |> Jason.encode!()
       |> then(&(&1 <> "\n"))
+
     Port.command(port, init_payload)
 
     Phoenix.PubSub.subscribe(Argus.PubSub, "appliance:#{appliance.mac_address}")

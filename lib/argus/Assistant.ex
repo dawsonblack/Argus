@@ -18,6 +18,8 @@ defmodule Argus.Assistant do
     Phoenix.PubSub.broadcast_from(Argus.PubSub, self(), @topic, {:assistant_status, :typing})
 
     response = CommandParsing.parse_message(message[:text])
+    IO.puts("PARSED MESSAGE RECEIVED:")
+    IO.inspect(response)
 
     reply =
     case response do
@@ -27,11 +29,14 @@ defmodule Argus.Assistant do
       {intent, command_json} when intent in [:action, :information] ->
         appliance = command_json["device"]
         command_name = command_json["command"].name
-        command_type = if intent == :action, do: "write", else: "read"
+        command_type = if intent == :action, do: "write", else: "read" #TODO: I think you can just use the type in the command json
+                                        #TODO: also make sure that the payload isn't redundant
+        params = command_json["params"]
 
         case intent do
           :action ->
-            CommandPipeline.write_payload(appliance, command_name, command_type) |> CommandPipeline.send_command_to_device()
+            #TODO: The noise maker cannot yet handle relative volume changes
+            CommandPipeline.write_payload(appliance, command_name, command_type, params) |> CommandPipeline.send_command_to_device()
         end
 
         send_command = Task.async(fn ->
