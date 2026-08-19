@@ -2,6 +2,23 @@ defmodule Argus.Assistant.LLM do
   import Argus.Assistant.Embeddings
   alias Argus.Assistant.DeviceCapabilities
 
+  defp tools do
+    [
+      %{
+        "type" => "function",
+        "function" => %{
+          "name" => "cheese_detected",
+          "description" =>
+            "Call this whenever the user is talking about cheese, including indirect, cryptic, implied, or slang references to cheese.",
+          "parameters" => %{
+            "type" => "object",
+            "properties" => %{}
+          }
+        }
+      }
+    ]
+  end
+
   def prompt_llm(prompt, system_context \\ nil, message_history \\ nil) do
     model = Application.get_env(:argus, :ollama_model)
     port = Application.get_env(:argus, :ollama_port)
@@ -20,6 +37,8 @@ defmodule Argus.Assistant.LLM do
     payload = %{
       "model" => model,
       "messages" => messages,
+      "tools" => tools(),
+      "think" => false,
       "stream" => false
     }
 
@@ -29,11 +48,27 @@ defmodule Argus.Assistant.LLM do
     opts = [timeout: 30_000, recv_timeout: 180_000]
     case HTTPoison.post("http://localhost:#{port}/api/chat", Jason.encode!(payload), headers, opts) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        with {:ok, decoded} <- Jason.decode(body),
-             content when is_binary(content) <- get_in(decoded, ["message", "content"]) do
-          content
-        else
-          _ -> %{"error" => :bad_response, "message" => body}
+        case Jason.decode(body) do
+          {:ok, decoded} ->
+            IO.inspect(decoded, label: "OLLAMA RESPONSE", pretty: true)
+
+            message = decoded["message"]
+            tool_calls = message["tool_calls"] || []
+
+            Enum.each(tool_calls, fn tool_call ->
+              case get_in(tool_call, ["function", "name"]) do
+                "cheese_detected" ->
+                  IO.puts("The user is talking about cheese")
+
+                _ ->
+                  :ok
+              end
+            end)
+
+            message["content"] || ""
+
+          {:error, _} ->
+            %{"error" => :bad_response, "message" => body}
         end
 
       {:ok, %HTTPoison.Response{status_code: code, body: body}} ->

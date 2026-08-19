@@ -17,7 +17,7 @@ defmodule Argus.Assistant do
   def handle_info({:user_message, message}, state) do
     Phoenix.PubSub.broadcast_from(Argus.PubSub, self(), @topic, {:assistant_status, :typing})
 
-    response = CommandParsing.parse_message(message[:text])
+    response = CommandParsing.parse_message_was_the_function_this_used_to_call_but_now_im_testing_an_allinone_agent_model(message[:text])
     IO.puts("PARSED MESSAGE RECEIVED:")
     IO.inspect(response)
 

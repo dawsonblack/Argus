@@ -92,6 +92,14 @@ defmodule Argus.Assistant.CommandParsing do
       end)
   end
 
+
+  def parse_message_was_the_function_this_used_to_call_but_now_im_testing_an_allinone_agent_model(message) do
+    {
+      :no_intent_just_direct_prompt,
+      LLM.prompt_llm(message, "Your name is Argus, you are a smart home assistant")
+    }
+  end
+
   #home is assumed to be known. A command will be accepted if
   # 1. space, device, and command are known
   # 2. space and device are known and device only has one command
