@@ -1,5 +1,6 @@
-defmodule Argus.DeviceCommunication.DeviceWorker do
+defmodule Argus.DeviceCommunication.BluetoothWorker do
   use GenServer
+
   alias Argus.DeviceCommunication.CommandPipeline
   alias Argus.Homes
 
@@ -7,10 +8,11 @@ defmodule Argus.DeviceCommunication.DeviceWorker do
     GenServer.start_link(__MODULE__, appliance, name: via(appliance.id))
   end
 
-  defp via(id), do: {:via, Registry, {Argus.DeviceRegistry, id}}
+  defp via(id),
+    do: {:via, Registry, {Argus.DeviceRegistry, id}}
 
   def init(appliance) do
-    port = Port.open({:spawn, "python assets/scripts/device_daemon.py"}, [ #CHANGEME: usually "python3" for mac and "python" for windows
+    port = Port.open({:spawn, "python assets/scripts/bluetooth_daemon.py"}, [ #CHANGEME: usually "python3" for mac and "python" for windows
       :binary,
       :exit_status,
       {:line, 4096}
