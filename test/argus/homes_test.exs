@@ -216,7 +216,7 @@ defmodule Argus.HomesTest do
       {:ok, home} = Homes.create_home(%{name: "home", address: "address"})
       {:ok, appliance} = Homes.create_appliance(home, %{name: "appliance", mac_address: "mac"})
 
-      attrs = %{name: "appliance command name", command_type: "lifecycle", command: ["static", [1]], uuid: "uuid", protocol: "bluetooth"}
+      attrs = %{name: "appliance command name", command_type: "lifecycle", command: ["static", [1]], uuid: "uuid"}
       assert {:ok, %ApplianceCommand{} = appliance_command} = Homes.create_appliance_command(appliance, attrs)
 
       assert appliance_command.name == "appliance command name"

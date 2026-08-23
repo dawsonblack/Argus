@@ -157,7 +157,6 @@ defmodule ArgusWeb.Api.HomeController do
                       id: command.id,
                       type: command.command_type,
                       name: command.name,
-                      protocol: command.protocol,
                       appliance_id: command.appliance_id,
                       uuid: command.uuid,
                       command: command.command

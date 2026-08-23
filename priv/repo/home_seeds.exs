@@ -21,84 +21,94 @@ Homes.create_home(%{name: "Main Apartment", address: "20 Olentangy Meadows Dr St
 home = Homes.get_home_by_slug("main-apartment")
 Homes.create_space(home, %{name: "Bedroom"})
 Homes.create_space(home, %{name: "Living Room"})
+Homes.create_space(home, %{name: "Kitchen"})
 Homes.create_space(home, %{name: "Bathroom"})
 Homes.create_space(home, %{name: "Office"})
 
-space = Homes.get_space_by_slug(home, "bedroom")
+bedroom = Homes.get_space_by_slug(home, "bedroom")
+kitchen = Homes.get_space_by_slug(home, "kitchen")
 
 #CHANGEME
-Homes.create_appliance(space, %{name: "Noise Maker", mac_address: "E0:E2:E6:6D:A8:CA"}) #windows
-#Homes.create_appliance(space, %{name: "Noise Maker", mac_address: "BA38DF23-BA87-3204-BF7C-F63DCFDBBB1F"}) #mac
+Homes.create_appliance(bedroom, %{name: "Noise Maker", mac_address: "E0:E2:E6:6D:A8:CA", protocol: "bluetooth"}) #windows
+#Homes.create_appliance(bedroom, %{name: "Noise Maker", mac_address: "BA38DF23-BA87-3204-BF7C-F63DCFDBBB1F", protocol: "bluetooth"}) #mac
 
-appliance = Homes.get_appliance_by_slug(space, "noise-maker")
+Homes.create_appliance(kitchen, %{name: "Coffee Station Light", mac_address: "A4:C1:38:1E:8F:15:31:64", protocol: "zigbee"})
 
-Homes.create_appliance_command(appliance,
+noise_maker = Homes.get_appliance_by_slug(bedroom, "noise-maker")
+coffee_station_light = Homes.get_appliance_by_slug(kitchen, "coffee-station-light")
+
+Homes.create_appliance_command(noise_maker,
       %{name: "handshake",
       command_type: "lifecycle",
-      protocol: "bluetooth",
       uuid: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["static", [0x06, 0xE0, 0xE2, 0xE6, 0x6D, 0xA8, 0xC8, 0xFF, 0xFF]]]})
 
-Homes.create_appliance_command(appliance,
+Homes.create_appliance_command(noise_maker,
       %{name: "on",
       command_type: "write",
-      protocol: "bluetooth",
       uuid: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["static", [0x02, 0x01]]]})
 
-Homes.create_appliance_command(appliance,
+Homes.create_appliance_command(noise_maker,
       %{name: "off",
       command_type: "write",
-      protocol: "bluetooth",
       uuid: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["static", [0x02, 0x00]]]})
 
-Homes.create_appliance_command(appliance,
+Homes.create_appliance_command(noise_maker,
       %{name: "volume",
       command_type: "write",
-      protocol: "bluetooth",
       uuid: "90759319-1668-44da-9ef3-492d593bd1e5",
       command: [["min", 100],
                 ["max", 10],
                 ["reverse", 0x01]]})
 
-Homes.create_appliance_command(appliance,
+Homes.create_appliance_command(noise_maker,
       %{name: "on",
       command_type: "read",
-      protocol: "bluetooth",
       uuid: "80c37f00-cc16-11e4-8830-0800200c9a66",
       command: [["charat", 3],
                 ["int", 10],
                 ["eq", 1],
                 ["ifelse", "on", "off"]]})
 
-Homes.create_appliance_command(appliance,
+Homes.create_appliance_command(noise_maker,
       %{name: "off",
       command_type: "read",
-      protocol: "bluetooth",
       uuid: "80c37f00-cc16-11e4-8830-0800200c9a66",
       command: [["charat", 3],
                 ["int", 10],
                 ["eq", 1],
                 ["ifelse", "on", "off"]]})
 
-Homes.create_appliance_command(appliance,
+Homes.create_appliance_command(noise_maker,
       %{name: "power",
       command_type: "read",
-      protocol: "bluetooth",
       uuid: "80c37f00-cc16-11e4-8830-0800200c9a66",
       command: [["charat", 3],
                 ["int", 10],
                 ["eq", 1],
                 ["ifelse", "on", "off"]]})
 
-Homes.create_appliance_command(appliance,
+Homes.create_appliance_command(noise_maker,
       %{name: "volume",
       command_type: "read",
-      protocol: "bluetooth",
       uuid: "80c37f00-cc16-11e4-8830-0800200c9a66",
       command: [["substr", 0, 2],
                 ["int", 16]]})
+
+
+
+Homes.create_appliance_command(coffee_station_light,
+      %{name: "on",
+      command_type: "write",
+      command: [["static", 0x01]]})
+
+Homes.create_appliance_command(coffee_station_light,
+      %{name: "off",
+      command_type: "write",
+      command: [["static", 0x00]]})
+
 
 
 
@@ -107,8 +117,8 @@ Homes.create_appliance_command(appliance,
 
 # alias Argus.Homes
 # home = Homes.get_home_by_slug("main-apartment")
-# space = Homes.get_space_by_slug(home, "bedroom")
-# appliance = Homes.get_appliance_by_slug(space, "noise-maker")
+# bedroom = Homes.get_space_by_slug(home, "bedroom")
+# appliance = Homes.get_appliance_by_slug(bedroom, "noise-maker")
 # Argus.DeviceCommunication.CommandPipeline.send_command(appliance, "on")
 
 

@@ -5,6 +5,7 @@ defmodule Argus.Repo.Migrations.CreateAppliances do
     create table(:appliances) do
       add :name, :string, null: false
       add :mac_address, :string, null: false
+      add :protocol, :string, null: false
       add :slug, :string, null: false
 
       add :space_id, references(:spaces, on_delete: :nothing)

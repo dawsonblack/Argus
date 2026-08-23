@@ -5,6 +5,7 @@ defmodule Argus.Homes.Appliance do
   schema "appliances" do
     field :name, :string
     field :mac_address, :string
+    field :protocol, :string
     field :slug, :string
 
     belongs_to :home, Argus.Homes.Home
@@ -18,8 +19,8 @@ defmodule Argus.Homes.Appliance do
   @doc false
   def changeset(appliance, attrs) do
     appliance
-    |> cast(attrs, [:name, :mac_address])
-    |> validate_required([:name, :mac_address])
+    |> cast(attrs, [:name, :mac_address, :protocol])
+    |> validate_required([:name, :mac_address, :protocol])
     |> Argus.Slugger.maybe_generate_slug()
     |> unique_constraint(:slug, name: :unique_appliance_home_slug)
     |> unique_constraint(:slug, name: :unique_appliance_space_slug)
