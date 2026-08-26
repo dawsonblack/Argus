@@ -44,3 +44,5 @@ npm-debug.log
 /TTS
 
 zigbee.db
+zigbee.db-shm
+zigbee.db-wal
