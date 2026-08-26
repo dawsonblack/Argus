@@ -1,6 +1,8 @@
 defmodule Argus.DeviceCommunication.CommandPipeline do
 
-  def write_payload(appliance, command_name, command_type, user_input \\ nil) do
+  def write_payload(appliance, command_name, command_type, user_input \\ nil)
+
+  def write_payload(%Argus.Homes.Appliance{protocol: "bluetooth"} = appliance, command_name, command_type, user_input) do
     cmd = Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, command_type)
 
     %{
@@ -13,12 +15,58 @@ defmodule Argus.DeviceCommunication.CommandPipeline do
     }
   end
 
-  def read_payload(appliance, command_name) do
+  def write_payload(%Argus.Homes.Appliance{protocol: "zigbee"} = appliance, command_name, command_type, user_input) do
+    cmd = Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, command_type)
+
+    %{
+      mac_address: appliance.mac_address,
+      cluster: cmd.cluster,
+      endpoint: cmd.endpoint,
+      command:
+        cmd.command
+        |> Jason.decode!()
+        |> rf_command(user_input)
+    }
+  end
+
+  def write_payload(appliance, command_name, command_type, user_input) do
+    cmd = Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, command_type)
+
+    %{
+      mac_address: appliance.mac_address,
+      command:
+        cmd.command
+        |> Jason.decode!()
+        |> rf_command(user_input)
+    }
+  end
+
+  def read_payload(appliance, command_name)
+
+  def read_payload(%Argus.Homes.Appliance{protocol: "bluetooth"} = appliance, command_name) do
     cmd = Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, "read")
 
     %{
       mac_address: appliance.mac_address,
       uuid: cmd.uuid,
+      command: "read"
+    }
+  end
+
+  def read_payload(%Argus.Homes.Appliance{protocol: "zigbee"} = appliance, command_name) do
+    cmd = Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, "read")
+
+    %{
+      mac_address: appliance.mac_address,
+      cluster: cmd.cluster,
+      endpoint: cmd.endpoint,
+      command: "read"
+    }
+  end
+
+  def read_payload(appliance, _command_name) do
+    %{
+      mac_address: appliance.mac_address,
       command: "read"
     }
   end

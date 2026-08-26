@@ -22,7 +22,8 @@ defmodule Argus.Application do
       {Registry, keys: :unique, name: Argus.DeviceRegistry},
       Argus.Assistant,
       #CHANGEME when you don't want devices to be conected to automatically on startup. Will fail if database does not have real device data
-      Argus.DeviceCommunication.BluetoothSupervisor
+      Argus.DeviceCommunication.BluetoothSupervisor,
+      Argus.DeviceCommunication.ZigbeeWorker
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
