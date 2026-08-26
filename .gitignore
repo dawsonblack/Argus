@@ -42,3 +42,5 @@ npm-debug.log
 /rasa/write_commands/.rasa
 
 /TTS
+
+zigbee.db

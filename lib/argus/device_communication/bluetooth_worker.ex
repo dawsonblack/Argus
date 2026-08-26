@@ -47,7 +47,7 @@ defmodule Argus.DeviceCommunication.BluetoothWorker do
   end
 
   def handle_info({:send_command, command}, %{port: port} = state) do
-    IO.puts("DEVICE WORKER SENDING COMMAND TO APPLIANCE")
+    IO.puts("BLUETOOTH WORKER SENDING COMMAND TO APPLIANCE")
     payload = Jason.encode!(command) <> "\n"
     Port.command(port, payload)
     {:noreply, state}
@@ -60,7 +60,7 @@ defmodule Argus.DeviceCommunication.BluetoothWorker do
   end
 
   def handle_info({_, {:exit_status, _}}, %{appliance: appliance} = state) do
-    IO.puts("DAEMON HAS SHUT DOWN")
+    IO.puts("BLUETOOTH DAEMON HAS SHUT DOWN")
     Phoenix.PubSub.broadcast_from(
       Argus.PubSub,
       self(),
@@ -71,13 +71,13 @@ defmodule Argus.DeviceCommunication.BluetoothWorker do
   end
 
   def handle_info(message, state) do
-    IO.puts("DEVICE WORKER RECEIVED UNEXPECTED MESSAGE")
+    IO.puts("BLUETOOTH WORKER RECEIVED UNEXPECTED MESSAGE")
     IO.inspect(message)
     {:noreply, state}
   end
 
   def handle_daemon_info(%{"synchronous_state_update" => %{} = state_update}, %{appliance: appliance} = state) do
-    IO.puts("DEVICE WORKER RECEIVED SYNCHRONOUS STATE UPDATE, SENDING TO TOPIC appliance-sync:#{appliance.mac_address}")
+    IO.puts("BLUETOOTH WORKER RECEIVED SYNCHRONOUS STATE UPDATE, SENDING TO TOPIC appliance-sync:#{appliance.mac_address}")
     Phoenix.PubSub.broadcast_from(
       Argus.PubSub,
       self(),
@@ -88,7 +88,7 @@ defmodule Argus.DeviceCommunication.BluetoothWorker do
   end
 
   def handle_daemon_info(%{"state_update" => %{} = state_update}, %{appliance: appliance} = state) do
-    IO.puts("DEVICE WORKER RECEIVED STATE UPDATE, SENDING TO TOPIC appliance:#{appliance.mac_address}")
+    IO.puts("BLUETOOTH WORKER RECEIVED STATE UPDATE, SENDING TO TOPIC appliance:#{appliance.mac_address}")
     Phoenix.PubSub.broadcast_from(
       Argus.PubSub,
       self(),
@@ -119,7 +119,7 @@ defmodule Argus.DeviceCommunication.BluetoothWorker do
   end
 
   def handle_daemon_info(message, state) do
-    IO.puts("UNEXPECTED DAEMON MESSAGE")
+    IO.puts("UNEXPECTED BLUETOOTH DAEMON MESSAGE")
     IO.inspect(message)
     {:noreply, state}
   end

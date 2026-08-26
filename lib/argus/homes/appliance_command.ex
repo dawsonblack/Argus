@@ -7,6 +7,8 @@ defmodule Argus.Homes.ApplianceCommand do
     field :command_type, :string
     field :command, :string
     field :uuid, :string
+    field :cluster, :integer
+    field :endpoint, :integer
 
     belongs_to :appliance, Argus.Homes.Appliance
 
@@ -16,7 +18,7 @@ defmodule Argus.Homes.ApplianceCommand do
   @doc false
   def changeset(appliance_command, attrs) do
     appliance_command
-    |> cast(attrs, [:name, :command_type, :command, :uuid])
+    |> cast(attrs, [:name, :command_type, :command, :uuid, :cluster, :endpoint])
     |> validate_required([:name, :command_type, :command])
   end
 end

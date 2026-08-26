@@ -7,6 +7,8 @@ defmodule Argus.Repo.Migrations.CreateApplianceCommands do
       add :command_type, :string, null: false
       add :command, :string, null: false
       add :uuid, :string
+      add :cluster, :integer
+      add :endpoint, :integer
       add :appliance_id, references(:appliances, on_delete: :nothing), null: false
 
       timestamps(type: :utc_datetime)

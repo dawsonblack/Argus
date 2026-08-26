@@ -102,12 +102,30 @@ Homes.create_appliance_command(noise_maker,
 Homes.create_appliance_command(coffee_station_light,
       %{name: "on",
       command_type: "write",
+      cluster: 6,
+      endpoint: 1,
       command: [["static", 0x01]]})
 
 Homes.create_appliance_command(coffee_station_light,
       %{name: "off",
       command_type: "write",
+      cluster: 6,
+      endpoint: 1,
       command: [["static", 0x00]]})
+
+Homes.create_appliance_command(coffee_station_light,
+      %{name: "toggle",
+      command_type: "write",
+      cluster: 6,
+      endpoint: 1,
+      command: [["static", 0x02]]})
+
+Homes.create_appliance_command(coffee_station_light,
+      %{name: "power",
+      command_type: "read",
+      cluster: 6,
+      endpoint: 1,
+      command: [["static", 0x0000]]})
 
 
 
@@ -122,7 +140,7 @@ Homes.create_appliance_command(coffee_station_light,
 # Argus.DeviceCommunication.CommandPipeline.send_command(appliance, "on")
 
 
-# If you need to reset the database:
+# If you need to reset the database THIS RESETS EVERYTHING ALL MESSAGES AND APPLIANCES AND HOMES:
 
 # mix ecto.drop
 # mix ecto.create
@@ -133,4 +151,4 @@ Homes.create_appliance_command(coffee_station_light,
 
 # to log into database do: psql -U postgres -d argus_dev
 
-# If you remake the database you need to comment out device supervisor in application.ex, otherwise seeds will crash
+# If you remake the database you need to comment out device supervisor in application.ex, otherwise seeds will crash but this comment might can be deleted because I don't think that's a problem anymore
