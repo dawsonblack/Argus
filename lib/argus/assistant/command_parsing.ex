@@ -5,7 +5,7 @@ defmodule Argus.Assistant.CommandParsing do
   alias Argus.Homes
 
   def message_intent(message) do
-    port = Application.get_env(:argus, :rasa_port)
+    port = 5050 #rasa port, this is gonna be delted soon
 
     payload = %{
       "prompt" => message,

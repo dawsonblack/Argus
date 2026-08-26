@@ -14,7 +14,6 @@ config :argus,
   #CHANGEME when these are different for your situation
   ollama_port: 11434,
   embeddings_port: 11434,
-  rasa_port: 5050,
   ollama_model: "qwen3:8b", #"llama3.2:3b-instruct-q4_K_M"
   embeddings_mode: "mxbai-embed-large"
 
