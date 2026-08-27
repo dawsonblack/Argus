@@ -31,13 +31,13 @@ defmodule Argus.Assistant.CommandParsing do
     # |> Enum.drop(-1) # drop the last message, which is the user message that triggered this function
     # |> Enum.map(fn msg -> %{
     #   "role" =>
-    #         if message.sender == "assistant" do
+    #         if msg.sender == "assistant" do
     #           "assistant"
     #         else
     #           "user"
     #         end,
 
-    #   content: msg.text} end)
+    #   "content" => msg.text} end)
 
     {
       :no_intent_just_direct_prompt,
