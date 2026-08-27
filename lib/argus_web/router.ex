@@ -40,8 +40,8 @@ defmodule ArgusWeb.Router do
 
   scope "/api/:home_slug/:space_slug/:appliance_slug", ArgusWeb.Api do
     pipe_through :api
-    get  "/read/:command_name", ApplianceController, :read_from_device
-    post "/write/:command_name", ApplianceController, :write_to_device
+    #get  "/read/:command_name", ApplianceController, :read_from_device
+    #post "/write/:command_name", ApplianceController, :write_to_device
   end
 
   # Other scopes may use custom stacks.

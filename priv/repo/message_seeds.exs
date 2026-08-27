@@ -61,4 +61,8 @@ Chat.create_message(%{
 # MIX_ENV=test mix ecto.create
 # MIX_ENV=test mix ecto.migrate
 
+# to log into database do: psql -U postgres -d argus_dev
+# because messages sometimes have emojis in them, in psql run the following command to display them:
+# SET client_encoding = 'UTF8';
+
 # If you remake the database you need to comment out device supervisor in application.ex, otherwise seeds will crash

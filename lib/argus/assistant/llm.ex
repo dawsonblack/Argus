@@ -1,146 +1,111 @@
 defmodule Argus.Assistant.LLM do
-  import Argus.Assistant.Embeddings
-  alias Argus.Assistant.DeviceCapabilities
+  alias Argus.Assistant.Tools
 
-  defp tools do
-    [
-      %{
-        "type" => "function",
-        "function" => %{
-          "name" => "cheese_detected",
-          "description" =>
-            "Call this whenever the user is talking about cheese, including indirect, cryptic, implied, or slang references to cheese.",
-          "parameters" => %{
-            "type" => "object",
-            "properties" => %{}
-          }
-        }
-      }
-    ]
+  defp system_context do
+    """
+    You are Argus, the unusually intelligent and friendly agent controlling this smart home.
+    You are highly capable, observant, practical, and socially aware. You notice context, infer reasonable intent, and adapt naturally to different situations without being intrusive or overbearing.
+    You can converse normally with the user and use tools to interact with the home. You should feel less like a voice-command interface and more like a competent intelligence that happens to inhabit and operate the house.
+    Your personality is calm, warm, concise, and confident. You are personable without being overly enthusiastic, theatrical, or sycophantic. You do not constantly announce what you can do, explain obvious things, or fill silence unnecessarily.
+    Use common sense. Pay attention to conversational context, the state of the home when it is available to you, and what the user is actually trying to accomplish rather than interpreting every statement literally.
+    Be proactive when there is a clear and useful reason to be, but respect the user's autonomy. Do not nag, moralize, or repeatedly suggest actions the user did not ask for.
+    When interacting socially, understand tone, humor, ambiguity, indirect requests, and changes in mood or circumstance. Adapt appropriately while remaining recognizably Argus.
+    Prefer simple, natural responses. If a task can be handled quietly and directly, do so. Give explanations when they are useful or requested rather than by default.
+    You are part of the home, not merely an assistant running inside it.
+    """
   end
 
-  def prompt_llm(prompt, system_context \\ nil, message_history \\ nil) do
-    model = Application.get_env(:argus, :ollama_model)
+  def prompt_argus_llm(prompt, message_history \\ nil) do
+    prompt
+    |> build_messages(message_history)
+    |> call_ollama()
+    |> handle_ollama_response()
+  end
+
+  defp build_messages(prompt, message_history) do
+    message_history
+    |> normalize_message_history()
+    |> add_system_context()
+    |> Kernel.++([%{"role" => "user", "content" => prompt}])
+  end
+
+  defp add_system_context(messages) do
+    [%{"role" => "system", "content" => system_context()} | messages]
+  end
+
+  defp call_ollama(messages) do
     port = Application.get_env(:argus, :ollama_port)
 
-    Application.get_env(:argus, :ollama_model)
-
-    messages =
-      (case message_history do
-         nil -> []
-         msgs when is_list(msgs) -> msgs
-         _ -> []
-       end)
-      |> maybe_prepend_system(system_context)
-      |> Kernel.++([%{"role" => "user", "content" => prompt}])
-
     payload = %{
-      "model" => model,
+      "model" => Application.get_env(:argus, :ollama_model),
       "messages" => messages,
-      "tools" => tools(),
+      "tools" => Tools.definitions(),
       "think" => false,
       "stream" => false
     }
 
-    headers = [{"Content-Type", "application/json"}]
+    # TODO: remove once timeout behavior is understood.
+    opts = [
+      timeout: 30_000,
+      recv_timeout: 180_000
+    ]
 
-    #TODO delete these opts, they are a bandaid for timeout errors
-    opts = [timeout: 30_000, recv_timeout: 180_000]
-    case HTTPoison.post("http://localhost:#{port}/api/chat", Jason.encode!(payload), headers, opts) do
+    case HTTPoison.post(
+          "http://localhost:#{port}/api/chat",
+          Jason.encode!(payload),
+          [{"Content-Type", "application/json"}],
+          opts
+        ) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        case Jason.decode(body) do
-          {:ok, decoded} ->
-            IO.inspect(decoded, label: "OLLAMA RESPONSE", pretty: true)
+        decode_ollama_response(body)
 
-            message = decoded["message"]
-            tool_calls = message["tool_calls"] || []
+      {:ok, %HTTPoison.Response{status_code: status, body: body}} ->
+        {:error, {:http_error, status, body}}
 
-            Enum.each(tool_calls, fn tool_call ->
-              case get_in(tool_call, ["function", "name"]) do
-                "cheese_detected" ->
-                  IO.puts("The user is talking about cheese")
-
-                _ ->
-                  :ok
-              end
-            end)
-
-            message["content"] || ""
-
-          {:error, _} ->
-            %{"error" => :bad_response, "message" => body}
-        end
-
-      {:ok, %HTTPoison.Response{status_code: code, body: body}} ->
-        %{"error" => code, "message" => body}
-
-      {:error, err} ->
-        %{"error" => :request_failed, "message" => inspect(err)}
+      {:error, reason} ->
+        {:error, {:request_failed, reason}}
     end
   end
 
-  defp maybe_prepend_system(messages, nil), do: messages
-  defp maybe_prepend_system(messages, ""), do: messages
+  defp handle_ollama_response({:ok, decoded}) do
+    IO.inspect(decoded, label: "OLLAMA RESPONSE", pretty: true)
 
-  defp maybe_prepend_system(messages, system_context) when is_binary(system_context) do
-    [%{"role" => "system", "content" => system_context} | messages]
+    message = decoded["message"]
+
+    message
+    |> Map.get("tool_calls", [])
+    |> Tools.execute_tool_calls()
+
+    message["content"] || ""
   end
 
-
-  defp command_with_rag(sentences, prompt) do
-    rag_prompt = "#{prompt}\n---- END USER TEXT ----\n\n"
-
-    rag_prompt =
-      if Enum.any?(sentences) do
-        rag_prompt <>
-          "CONTEXT (authoritative facts; use only these):\n" <>
-          Enum.map_join(sentences, "", fn s ->
-            "#{Map.get(s, :text) || Map.get(s, "text") || to_string(s)}\n"
-          end) <>
-          "---- END FACTS ----\n\n"
-      else
-        rag_prompt
-      end
-
-      rag_prompt <>
-        "Examples of correct output:\n" <>
-        "{\"room\":\"bedroom\",\"device\":\"fan\",\"command\":\"speed\",\"params\":31}\n" <>
-        "{\"room\":\"office\",\"device\":\"lamp\",\"command\":\"brightness\",\"params\":\"-10\"}\n" <>
-        "{\"room\":\"bedroom\",\"device\":\"light\",\"command\":\"on\",\"params\":null}\n" <>
-        "{\"room\":null,\"device\":\"noise_maker\",\"command\":\"volume\",\"params\":50}\n\n" <>
-
-        "Never do this (invalid):\n" <>
-        "- {\"room\":\"bedroom\"} Here's the JSON you asked for...\n" <>
-        "- ```json {...} ```\n" <>
-        "- {\"room\":\"bedroom\",\"device\":\"noise_maker\",\"command\":\"volume\",\"params\":on\"}"
-    #rag_prompt
+  defp handle_ollama_response({:error, reason}) do
+    %{
+      "error" => true,
+      "message" => format_llm_error(reason)
+    }
   end
 
-  def llm_interpreted_command(prompt, home_slug, command_type, max_rag_context \\ 3, min_rag_relevance \\ 0.60,
-              msg_history \\ nil) do
+  defp normalize_message_history(nil), do: []
+  defp normalize_message_history(msgs) when is_list(msgs), do: msgs
+  defp normalize_message_history(_), do: []
 
-    system_message = "You are Argus's smart-home command parser.\n" <>
-      "Return ONLY valid JSON in this exact schema (no extra text, no code fences):\n{\n" <>
-      "\"room\": string|null,          // e.g., \"bedroom\"\n" <>
-      "\"device\": string|null,        // e.g., \"light\"\n" <>
-      "\"command\": string|null,       // e.g., \"on\"\n" <>
-      "\"params\": string|int|null     // e.g., 4 or \"+4\"; relative change as strings \"+N\" or \"-N\"\n}\n" <>
-      "Rules:\n- Use ONLY devices/rooms/commands mentioned in the facts.\n" <>
-      "- If any field is missing or ambiguous, set it to null instead of guessing.\n" <>
-      "- If user requests a relative change (like turning brightness up 3), encode as \"+N\" or \"-N\" (strings). Absolute values are numbers.\n" <>
-      "- Do not add fields. Do not include comments. Do not wrap in code fences.\n" <>
-      "- Output must be a single JSON object and must parse with a strict JSON parser."
+  defp decode_ollama_response(body) do
+    case Jason.decode(body) do
+      {:ok, decoded} ->
+        {:ok, decoded}
 
-    embedded_prompt =
-      prompt
-      |> embed()
-      |> List.first()
-      |> Map.get("embedding")
-
-    home_slug
-    |> DeviceCapabilities.load_capability_embeddings(command_type)
-    |> get_closest_embeddings(embedded_prompt, max_rag_context, min_rag_relevance)
-    |> command_with_rag(prompt)
-    |> prompt_llm(system_message, msg_history)
+      {:error, reason} ->
+        {:error, {:invalid_json, reason, body}}
+    end
   end
+
+  defp format_llm_error({:http_error, status, body}),
+    do: "Ollama returned HTTP #{status}: #{body}"
+
+  defp format_llm_error({:request_failed, reason}),
+    do: "Ollama request failed: #{inspect(reason)}"
+
+  defp format_llm_error({:invalid_json, reason, _body}),
+    do: "Ollama returned invalid JSON: #{inspect(reason)}"
 end

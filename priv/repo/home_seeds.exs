@@ -16,9 +16,9 @@ Repo.query!("TRUNCATE TABLE homes, spaces, appliances, appliance_commands RESTAR
 
 Homes.create_home(%{name: "Beach House", address: "123 Guatamo Dr San Diego, CA, 91911"})
 Homes.create_home(%{name: "Mountain Cabin", address: "5 Bison Circle Denver, CO, 80014"})
-Homes.create_home(%{name: "Main Apartment", address: "20 Olentangy Meadows Dr Ste 315 Lewis Center, OH, 43035"})
+Homes.create_home(%{name: "House", address: "shouldn't put the new address on github"})
 
-home = Homes.get_home_by_slug("main-apartment")
+home = Homes.get_home_by_slug("house")
 Homes.create_space(home, %{name: "Bedroom"})
 Homes.create_space(home, %{name: "Living Room"})
 Homes.create_space(home, %{name: "Kitchen"})
@@ -134,7 +134,7 @@ Homes.create_appliance_command(coffee_station_light,
 # for iex:
 
 # alias Argus.Homes
-# home = Homes.get_home_by_slug("main-apartment")
+# home = Homes.get_home_by_slug("house")
 # bedroom = Homes.get_space_by_slug(home, "bedroom")
 # appliance = Homes.get_appliance_by_slug(bedroom, "noise-maker")
 # Argus.DeviceCommunication.CommandPipeline.send_command(appliance, "on")

@@ -3,7 +3,7 @@ defmodule Argus.Assistant.Embeddings do
 
   def embed(texts) when is_list(texts) do
     port = Application.get_env(:argus, :embeddings_port)
-    model = Application.get_env(:argus, :embeddings_mode)
+    model = Application.get_env(:argus, :embeddings_model)
 
     body = Jason.encode!(%{model: model, input: texts})
 

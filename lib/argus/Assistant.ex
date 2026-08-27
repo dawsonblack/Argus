@@ -3,7 +3,6 @@ defmodule Argus.Assistant do
 
   alias Argus.Chat
   alias Argus.Assistant.CommandParsing
-  alias Argus.DeviceCommunication.CommandPipeline
 
   @topic "chat:global"
 
@@ -26,54 +25,54 @@ defmodule Argus.Assistant do
       {_, nil} ->
        "Something went wrong" #TODO: this has to do with json validation, have a better message for this
 
-      {intent, command_json} when intent in [:action, :information] ->
-        appliance = command_json["device"]
-        command_name = command_json["command"].name
-        command_type = if intent == :action, do: "write", else: "read" #TODO: I think you can just use the type in the command json
-                                        #TODO: also make sure that the payload isn't redundant
-        params = command_json["params"]
+      # {intent, command_json} when intent in [:action, :information] ->
+      #   appliance = command_json["device"]
+      #   command_name = command_json["command"].name
+      #   command_type = if intent == :action, do: "write", else: "read" #TODO: I think you can just use the type in the command json
+      #                                   #TODO: also make sure that the payload isn't redundant
+      #   params = command_json["params"]
 
-        case intent do
-          :action ->
-            #TODO: The noise maker cannot yet handle relative volume changes
-            CommandPipeline.write_payload(appliance, command_name, command_type, params) |> CommandPipeline.send_command_to_device()
-        end
+      #   case intent do
+      #     :action ->
+      #       #TODO: The noise maker cannot yet handle relative volume changes
+      #       CommandPipeline.write_payload(appliance, command_name, command_type, params) |> CommandPipeline.send_command_to_device()
+      #   end
 
-        send_command = Task.async(fn ->
-                                    CommandPipeline.read_payload(appliance, command_name)
-                                    |> CommandPipeline.send_command_to_device_synchronously()
-                                    |> CommandPipeline.interpret_read(
-                                        Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, "read").command
-                                    )
-                                  end)
+      #   send_command = Task.async(fn ->
+      #                               CommandPipeline.read_payload(appliance, command_name)
+      #                               |> CommandPipeline.send_command_to_device_synchronously()
+      #                               |> CommandPipeline.interpret_read(
+      #                                   Argus.Homes.get_appliance_command_by_name_and_type(appliance, command_name, "read").command
+      #                               )
+      #                             end)
 
-        delay_message = Task.async(
-          fn ->
-            :timer.sleep(2000)
-            case Chat.create_message(%{sender: "assistant", modality: message[:modality], text: "One sec..."}) do
-              {:ok, _} ->
-                Phoenix.PubSub.broadcast_from(Argus.PubSub, self(), @topic, {:assistant_status, :still_waiting})
-            end
-          end)
+      #   delay_message = Task.async(
+      #     fn ->
+      #       :timer.sleep(2000)
+      #       case Chat.create_message(%{sender: "assistant", modality: message[:modality], text: "One sec..."}) do
+      #         {:ok, _} ->
+      #           Phoenix.PubSub.broadcast_from(Argus.PubSub, self(), @topic, {:assistant_status, :still_waiting})
+      #       end
+      #     end)
 
-        send_command_result = Task.await(send_command, 11_000)
+      #   send_command_result = Task.await(send_command, 11_000)
 
-        case Task.yield(delay_message, 0) do
-          nil -> Task.shutdown(delay_message, :brutal_kill)
-          {:ok, _val} -> :ok
-          {:exit, _} -> :ok
-        end
+      #   case Task.yield(delay_message, 0) do
+      #     nil -> Task.shutdown(delay_message, :brutal_kill)
+      #     {:ok, _val} -> :ok
+      #     {:exit, _} -> :ok
+      #   end
 
-        case send_command_result do
-          {:state_update, _} ->
-            "Request completed"
-          :timeout ->
-            "Request timed out"
-          other ->
-            IO.puts("GOT AN ERROR WITH READ COMMAND IN ASSISTANT")
-            IO.inspect(other)
-            "An error occured. Please try again."
-        end
+      #   case send_command_result do
+      #     {:state_update, _} ->
+      #       "Request completed"
+      #     :timeout ->
+      #       "Request timed out"
+      #     other ->
+      #       IO.puts("GOT AN ERROR WITH READ COMMAND IN ASSISTANT")
+      #       IO.inspect(other)
+      #       "An error occured. Please try again."
+      #   end
 
       {_, reply} -> reply
     end

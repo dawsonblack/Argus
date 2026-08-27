@@ -14,8 +14,8 @@ config :argus,
   #CHANGEME when these are different for your situation
   ollama_port: 11434,
   embeddings_port: 11434,
-  ollama_model: "qwen3:8b", #"llama3.2:3b-instruct-q4_K_M"
-  embeddings_mode: "mxbai-embed-large"
+  ollama_model: "qwen3:8b", #"llama3.2:3b-instruct-q4_K_M" was the old one
+  embeddings_model: "mxbai-embed-large"
 
 # Configures the endpoint
 config :argus, ArgusWeb.Endpoint,
